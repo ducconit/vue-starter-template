@@ -3,16 +3,23 @@ import type { toggleVariants } from '@/components/ui/toggle'
 import type { VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import { reactiveOmit } from '@vueuse/core'
-import { ToggleGroupRoot, type ToggleGroupRootEmits, type ToggleGroupRootProps, useForwardPropsEmits } from 'reka-ui'
+import {
+  ToggleGroupRoot,
+  type ToggleGroupRootEmits,
+  type ToggleGroupRootProps,
+  useForwardPropsEmits,
+} from 'reka-ui'
 import { type HTMLAttributes, provide } from 'vue'
 
 type ToggleGroupVariants = VariantProps<typeof toggleVariants>
 
-const props = defineProps<ToggleGroupRootProps & {
-  class?: HTMLAttributes['class']
-  variant?: ToggleGroupVariants['variant']
-  size?: ToggleGroupVariants['size']
-}>()
+const props = defineProps<
+  ToggleGroupRootProps & {
+    class?: HTMLAttributes['class']
+    variant?: ToggleGroupVariants['variant']
+    size?: ToggleGroupVariants['size']
+  }
+>()
 const emits = defineEmits<ToggleGroupRootEmits>()
 
 provide('toggleGroup', {
@@ -30,7 +37,12 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     :data-size="size"
     :data-variant="variant"
     v-bind="forwarded"
-    :class="cn('group/toggle-group flex w-fit items-center rounded-md data-[variant=outline]:shadow-xs', props.class)"
+    :class="
+      cn(
+        'group/toggle-group flex w-fit items-center rounded-md data-[variant=outline]:shadow-xs',
+        props.class,
+      )
+    "
   >
     <slot />
   </ToggleGroupRoot>

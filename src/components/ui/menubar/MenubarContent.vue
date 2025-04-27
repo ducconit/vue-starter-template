@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { cn } from '@/lib/utils'
-import {
-  MenubarContent,
-  type MenubarContentProps,
-  MenubarPortal,
-  useForwardProps,
-} from 'reka-ui'
+import { MenubarContent, type MenubarContentProps, MenubarPortal, useForwardProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 
 const props = withDefaults(

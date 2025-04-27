@@ -4,9 +4,7 @@ import { cn } from '@/lib/utils'
 import { reactiveOmit } from '@vueuse/core'
 import { Separator, type SeparatorProps } from 'reka-ui'
 
-const props = withDefaults(defineProps<
-  SeparatorProps & { class?: HTMLAttributes['class'] }
->(), {
+const props = withDefaults(defineProps<SeparatorProps & { class?: HTMLAttributes['class'] }>(), {
   orientation: 'horizontal',
   decorative: true,
 })

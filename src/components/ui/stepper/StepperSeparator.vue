@@ -19,13 +19,15 @@ const forwarded = useForwardProps(delegatedProps)
 <template>
   <StepperSeparator
     v-bind="forwarded"
-    :class="cn(
-      'bg-muted',
-      // Disabled
-      'group-data-[disabled]:bg-muted group-data-[disabled]:opacity-50',
-      // Completed
-      'group-data-[state=completed]:bg-accent-foreground',
-      props.class,
-    )"
+    :class="
+      cn(
+        'bg-muted',
+        // Disabled
+        'group-data-[disabled]:bg-muted group-data-[disabled]:opacity-50',
+        // Completed
+        'group-data-[state=completed]:bg-accent-foreground',
+        props.class,
+      )
+    "
   />
 </template>
