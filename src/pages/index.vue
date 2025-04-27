@@ -1,10 +1,7 @@
-<script setup lang="ts">
-import HelloWorld from '@/components/HelloWorld.vue'
-import Empty from '@/layouts/empty.vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <Empty>
+  <EmptyLayout>
     <div>
       <a href="https://vite.dev" target="_blank">
         <img src="/vite.svg" class="logo" alt="Vite logo" />
@@ -14,7 +11,7 @@ import Empty from '@/layouts/empty.vue'
       </a>
     </div>
     <HelloWorld msg="Vite + Vue" />
-  </Empty>
+  </EmptyLayout>
 </template>
 
 <style scoped>
