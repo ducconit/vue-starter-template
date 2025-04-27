@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-import './style.css'
+import { VueQueryPlugin } from '@tanstack/vue-query'
+
 import App from './App.vue'
 import { startMockServer } from './plugins/miragejs'
 import { i18n } from './plugins/i18n'
@@ -12,6 +13,7 @@ if (import.meta.env.VITE_MOCK_SERVER === 'true') {
 
 const app = createApp(App)
 
+app.use(VueQueryPlugin)
 app.use(i18n)
 app.use(store)
 app.use(router)

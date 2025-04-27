@@ -13,12 +13,23 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+.vscode
+.cursor
+.windsurf
 .idea
+.trae
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables files
+.env
+.env.*
+!.env.example
+
+# AI ide rules
+.cursorrules
+.windsurfrules
