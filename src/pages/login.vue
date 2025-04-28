@@ -15,8 +15,11 @@ useTitle('Login')
 
 const router = useRouter()
 const authStore = useAuthStore()
-const { isPending: isLoadingLogging, mutateAsync: login } = useMutation({
-  mutationKey: 'login',
+const {
+  isPending: isLoadingLogging,
+  mutateAsync: login,
+  isSuccess: isLoginSuccess,
+} = useMutation({
   mutationFn: apiLogin,
 })
 
@@ -27,11 +30,11 @@ const credentials = ref({
 
 const onSubmit = async () => {
   try {
-    const data = await login(credentials.value)
+    const data: any = await login(credentials.value)
     authStore.setUserLoggedIn(data.token, data.user)
 
-    router.push({ name: 'index' })
-  } catch (e) {
+    router.push({ name: 'home' })
+  } catch (e: any) {
     console.log(e)
     if (e?.response?.data?.err_code > 0) {
       toast.error(e?.response?.data?.err_msg)
@@ -52,6 +55,47 @@ const onSubmit = async () => {
           <CardContent>
             <form @submit.prevent="onSubmit">
               <div class="grid gap-6">
+                <div class="grid gap-6">
+                  <div class="grid gap-3">
+                    <Label for="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      v-model="credentials.email"
+                      placeholder="email@example.com"
+                      required
+                    />
+                  </div>
+                  <div class="grid gap-3">
+                    <div class="flex items-center">
+                      <Label for="password">Password</Label>
+                      <a href="#" class="ml-auto text-sm underline-offset-4 hover:underline">
+                        Forgot your password?
+                      </a>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="********"
+                      v-model="credentials.password"
+                      required
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    class="w-full"
+                    :disabled="isLoadingLogging || isLoginSuccess"
+                  >
+                    Login
+                  </Button>
+                </div>
+                <div
+                  class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
+                >
+                  <span class="bg-card text-muted-foreground relative z-10 px-2">
+                    Or continue with
+                  </span>
+                </div>
                 <div class="flex flex-col gap-4">
                   <Button variant="outline" class="w-full">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -71,35 +115,6 @@ const onSubmit = async () => {
                     </svg>
                     Login with Google
                   </Button>
-                </div>
-                <div
-                  class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
-                >
-                  <span class="bg-card text-muted-foreground relative z-10 px-2">
-                    Or continue with
-                  </span>
-                </div>
-                <div class="grid gap-6">
-                  <div class="grid gap-3">
-                    <Label for="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      v-model="credentials.email"
-                      placeholder="email@example.com"
-                      required
-                    />
-                  </div>
-                  <div class="grid gap-3">
-                    <div class="flex items-center">
-                      <Label for="password">Password</Label>
-                      <a href="#" class="ml-auto text-sm underline-offset-4 hover:underline">
-                        Forgot your password?
-                      </a>
-                    </div>
-                    <Input id="password" type="password" v-model="credentials.password" required />
-                  </div>
-                  <Button type="submit" class="w-full" :disabled="isLoadingLogging"> Login </Button>
                 </div>
                 <div class="text-center text-sm">
                   Don't have an account?
