@@ -18,6 +18,15 @@ export default [
     },
   },
   {
+    path: '/crypto',
+    component: () => import('@/pages/crypto.vue'),
+    name: 'crypto',
+    meta: {
+      layout: 'AppLayout',
+      auth: true,
+    },
+  },
+  {
     path: '/login',
     component: () => import('@/pages/login.vue'),
     name: 'login',

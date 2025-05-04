@@ -69,6 +69,10 @@ const data = {
           title: 'E-commerce',
           url: '/ecommerce',
         },
+        {
+          title: 'Crypto',
+          url: '/crypto',
+        },
       ],
     },
     {
