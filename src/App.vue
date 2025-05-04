@@ -75,6 +75,6 @@ onBeforeMount(async () => {
   <div>
     <AppError v-if="hasError" />
     <Component v-else :is="Layout" />
-    <Toaster />
+    <Toaster rich-colors />
   </div>
 </template>
