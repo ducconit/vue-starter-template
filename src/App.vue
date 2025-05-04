@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { Toaster } from '@/components/ui/sonner'
 import { useHead } from '@unhead/vue'
-import { computed, onErrorCaptured } from 'vue'
+import { computed, onBeforeMount, onErrorCaptured, toValue } from 'vue'
 import { useAppError, setAppError } from './composables/useAppError'
 import { useRoute } from 'vue-router'
 import EmptyLayout from '@/layouts/EmptyLayout.vue'
 import AppLayout from './layouts/AppLayout.vue'
+import { useAuthStore } from './stores'
+import { storeToRefs } from 'pinia'
+import { apiGetCurrentUser } from './api'
+import { toast } from 'vue-sonner'
 
 useHead({
   title: 'Dashboard',
@@ -45,6 +49,25 @@ onErrorCaptured((err, instance, info) => {
 
   // prevent default error handler
   return false
+})
+
+const authStore = useAuthStore()
+const { isLoggedIn } = storeToRefs(authStore)
+
+onBeforeMount(async () => {
+  // Nếu đã đăng nhập thì phải tải dữ liệu thông tin người dùng mới nhất
+  // Đoạn code này được thực thi nếu refresh trang hoặc mở tab mới
+  if (toValue(isLoggedIn)) {
+    try {
+      const { data } = await apiGetCurrentUser()
+      authStore.setUser(data.data)
+    } catch (e) {
+      console.log(e)
+      toast.error('Error', {
+        description: 'Failed to load user data',
+      })
+    }
+  }
 })
 </script>
 

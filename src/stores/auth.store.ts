@@ -19,6 +19,12 @@ export const useAuthStore = defineStore('auth', {
       })
     },
 
+    setUser(user: object | Ref<object>) {
+      this.$patch({
+        user: toValue(user),
+      })
+    },
+
     logout() {
       this.$patch({
         user: null,
@@ -26,5 +32,8 @@ export const useAuthStore = defineStore('auth', {
         isLoggedIn: false,
       })
     },
+  },
+  persist: {
+    pick: ['user', 'token', 'isLoggedIn'],
   },
 })

@@ -8,7 +8,7 @@ import { toast } from 'vue-sonner'
 import { useHead } from '@unhead/vue'
 import { useMutation } from '@tanstack/vue-query'
 import { apiLogin } from '@/api'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores'
 
 useHead({
@@ -16,6 +16,7 @@ useHead({
   meta: [{ name: 'description', content: 'Login to your account' }],
 })
 
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const {
@@ -33,10 +34,13 @@ const credentials = ref({
 
 const onSubmit = async () => {
   try {
-    const data: any = await login(credentials.value)
+    const { data }: any = await login(credentials.value)
     authStore.setUserLoggedIn(data.token, data.user)
 
-    router.push({ name: 'home' })
+    if (route.query.redirect) {
+      return router.push(route.query.redirect as string)
+    }
+    return router.push({ name: 'home' })
   } catch (e: any) {
     console.log(e)
     if (e?.response?.data?.err_code > 0) {

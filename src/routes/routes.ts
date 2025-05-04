@@ -5,22 +5,32 @@ export default [
     name: 'home',
     meta: {
       layout: 'AppLayout',
+      auth: true,
     },
   },
   {
     path: '/login',
     component: () => import('@/pages/login.vue'),
     name: 'login',
+    meta: {
+      guest: true,
+    },
   },
   {
     path: '/forgot-password',
     component: () => import('@/pages/forgot-password.vue'),
     name: 'forgot-password',
+    meta: {
+      guest: true,
+    },
   },
   {
     path: '/signup',
     component: () => import('@/pages/signup.vue'),
     name: 'signup',
+    meta: {
+      guest: true,
+    },
   },
   {
     // callback route
