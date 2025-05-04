@@ -24,6 +24,7 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  Users,
 } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<SidebarProps>(), {
@@ -72,6 +73,17 @@ const data = {
         {
           title: 'Crypto',
           url: '/crypto',
+        },
+      ],
+    },
+    {
+      title: 'User Management',
+      url: '/user-management',
+      icon: Users,
+      items: [
+        {
+          title: 'User List',
+          url: '/user-management',
         },
       ],
     },

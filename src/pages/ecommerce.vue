@@ -2,34 +2,52 @@
 import { setBreadcrumbs } from '@/composables/breadcrumbs'
 import { useHead } from '@unhead/vue'
 import { ref, onMounted, computed } from 'vue'
-import { 
-  LucideShoppingCart, 
-  LucideDollarSign, 
-  LucideArrowUpRight, 
-  LucideArrowDownRight, 
-  LucidePackage, 
-  LucideBarChart, 
+import {
+  LucideShoppingCart,
+  LucideDollarSign,
+  LucideArrowUpRight,
+  LucideArrowDownRight,
+  LucidePackage,
+  LucideBarChart,
   LucideShoppingBag,
   LucideTruck,
-  LucidePercent
+  LucidePercent,
 } from 'lucide-vue-next'
 import { Pie, Line } from 'vue-chartjs'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title, BarElement } from 'chart.js'
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  BarElement,
+} from 'chart.js'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 // Đăng ký các thành phần cần thiết cho biểu đồ
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title, BarElement)
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  BarElement,
+)
 
 useHead({
   title: 'E-commerce Dashboard',
   meta: [{ name: 'description', content: 'E-commerce Statistics Overview' }],
 })
 
-setBreadcrumbs([
-  { name: 'Dashboard', to: '/' },
-  { name: 'E-commerce' }
-])
+setBreadcrumbs([{ name: 'Dashboard', to: '/' }, { name: 'E-commerce' }])
 
 // Khoảng thời gian
 type TimePeriod = 'daily' | 'weekly' | 'monthly' | 'yearly'
@@ -92,7 +110,7 @@ const categoryData = ref({
   clothing: 28,
   home: 18,
   beauty: 12,
-  sports: 10
+  sports: 10,
 })
 
 // Dữ liệu cho biểu đồ trạng thái đơn hàng
@@ -100,80 +118,80 @@ const orderStatusData = ref({
   completed: 68,
   processing: 17,
   shipped: 12,
-  cancelled: 3
+  cancelled: 3,
 })
 
 // Dữ liệu cho top sản phẩm bán chạy
 const topProducts = ref([
-  { 
+  {
     id: 'p001',
-    name: 'Smartphone X Pro', 
+    name: 'Smartphone X Pro',
     category: 'Electronics',
     price: 499.99,
-    sales: 245, 
-    revenue: 122500, 
+    sales: 245,
+    revenue: 122500,
     growth: 12.5,
     stock: 78,
     rating: 4.8,
-    image: 'https://placehold.co/100x100/3b82f6/FFFFFF.png?text=Phone'
+    image: 'https://placehold.co/100x100/3b82f6/FFFFFF.png?text=Phone',
   },
-  { 
+  {
     id: 'p002',
-    name: 'Wireless Headphones', 
+    name: 'Wireless Headphones',
     category: 'Electronics',
     price: 149.99,
-    sales: 189, 
-    revenue: 28350, 
+    sales: 189,
+    revenue: 28350,
     growth: 8.2,
     stock: 124,
     rating: 4.5,
-    image: 'https://placehold.co/100x100/10b981/FFFFFF.png?text=Audio'
+    image: 'https://placehold.co/100x100/10b981/FFFFFF.png?text=Audio',
   },
-  { 
+  {
     id: 'p003',
-    name: 'Laptop Ultra', 
+    name: 'Laptop Ultra',
     category: 'Electronics',
     price: 1099.99,
-    sales: 142, 
-    revenue: 156200, 
+    sales: 142,
+    revenue: 156200,
     growth: -3.5,
     stock: 32,
     rating: 4.2,
-    image: 'https://placehold.co/100x100/6366f1/FFFFFF.png?text=Laptop'
+    image: 'https://placehold.co/100x100/6366f1/FFFFFF.png?text=Laptop',
   },
-  { 
+  {
     id: 'p004',
-    name: 'Smart Watch', 
+    name: 'Smart Watch',
     category: 'Wearables',
     price: 199.99,
-    sales: 136, 
-    revenue: 27200, 
+    sales: 136,
+    revenue: 27200,
     growth: 15.8,
     stock: 65,
     rating: 4.6,
-    image: 'https://placehold.co/100x100/ec4899/FFFFFF.png?text=Watch'
+    image: 'https://placehold.co/100x100/ec4899/FFFFFF.png?text=Watch',
   },
-  { 
+  {
     id: 'p005',
-    name: 'Bluetooth Speaker', 
+    name: 'Bluetooth Speaker',
     category: 'Audio',
     price: 149.99,
-    sales: 124, 
-    revenue: 18600, 
+    sales: 124,
+    revenue: 18600,
     growth: 5.4,
     stock: 89,
     rating: 4.3,
-    image: 'https://placehold.co/100x100/f59e0b/FFFFFF.png?text=Speaker'
+    image: 'https://placehold.co/100x100/f59e0b/FFFFFF.png?text=Speaker',
   },
 ])
 
 // Cấu hình biểu đồ đường cho doanh thu
 const revenueChartData = computed(() => ({
-  labels: revenueData.value.map(item => item.label),
+  labels: revenueData.value.map((item) => item.label),
   datasets: [
     {
       label: 'Revenue',
-      data: revenueData.value.map(item => item.value),
+      data: revenueData.value.map((item) => item.value),
       borderColor: 'rgba(75, 192, 192, 1)',
       backgroundColor: 'rgba(75, 192, 192, 0.2)',
       tension: 0.4,
@@ -182,9 +200,9 @@ const revenueChartData = computed(() => ({
       pointBorderColor: '#fff',
       pointBorderWidth: 2,
       pointRadius: 4,
-      pointHoverRadius: 6
-    }
-  ]
+      pointHoverRadius: 6,
+    },
+  ],
 }))
 
 // Cấu hình biểu đồ tròn cho danh mục sản phẩm
@@ -193,29 +211,29 @@ const categoryChartData = computed(() => ({
   datasets: [
     {
       data: [
-        categoryData.value.electronics, 
-        categoryData.value.clothing, 
-        categoryData.value.home, 
-        categoryData.value.beauty, 
-        categoryData.value.sports
+        categoryData.value.electronics,
+        categoryData.value.clothing,
+        categoryData.value.home,
+        categoryData.value.beauty,
+        categoryData.value.sports,
       ],
       backgroundColor: [
-        'rgba(54, 162, 235, 0.8)',  // Electronics - Blue
-        'rgba(255, 99, 132, 0.8)',   // Clothing - Red
-        'rgba(255, 206, 86, 0.8)',   // Home - Yellow
-        'rgba(75, 192, 192, 0.8)',   // Beauty - Green
-        'rgba(153, 102, 255, 0.8)'   // Sports - Purple
+        'rgba(54, 162, 235, 0.8)', // Electronics - Blue
+        'rgba(255, 99, 132, 0.8)', // Clothing - Red
+        'rgba(255, 206, 86, 0.8)', // Home - Yellow
+        'rgba(75, 192, 192, 0.8)', // Beauty - Green
+        'rgba(153, 102, 255, 0.8)', // Sports - Purple
       ],
       borderColor: [
         'rgba(54, 162, 235, 1)',
         'rgba(255, 99, 132, 1)',
         'rgba(255, 206, 86, 1)',
         'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)'
+        'rgba(153, 102, 255, 1)',
       ],
-      borderWidth: 1
-    }
-  ]
+      borderWidth: 1,
+    },
+  ],
 }))
 
 // Cấu hình biểu đồ tròn cho trạng thái đơn hàng
@@ -224,26 +242,26 @@ const orderStatusChartData = computed(() => ({
   datasets: [
     {
       data: [
-        orderStatusData.value.completed, 
-        orderStatusData.value.processing, 
-        orderStatusData.value.shipped, 
-        orderStatusData.value.cancelled
+        orderStatusData.value.completed,
+        orderStatusData.value.processing,
+        orderStatusData.value.shipped,
+        orderStatusData.value.cancelled,
       ],
       backgroundColor: [
-        'rgba(75, 192, 192, 0.8)',   // Completed - Green
-        'rgba(255, 206, 86, 0.8)',   // Processing - Yellow
-        'rgba(54, 162, 235, 0.8)',   // Shipped - Blue
-        'rgba(255, 99, 132, 0.8)'    // Cancelled - Red
+        'rgba(75, 192, 192, 0.8)', // Completed - Green
+        'rgba(255, 206, 86, 0.8)', // Processing - Yellow
+        'rgba(54, 162, 235, 0.8)', // Shipped - Blue
+        'rgba(255, 99, 132, 0.8)', // Cancelled - Red
       ],
       borderColor: [
         'rgba(75, 192, 192, 1)',
         'rgba(255, 206, 86, 1)',
         'rgba(54, 162, 235, 1)',
-        'rgba(255, 99, 132, 1)'
+        'rgba(255, 99, 132, 1)',
       ],
-      borderWidth: 1
-    }
-  ]
+      borderWidth: 1,
+    },
+  ],
 }))
 
 // Cấu hình options cho biểu đồ
@@ -255,23 +273,23 @@ const chartOptions: any = {
       position: 'bottom' as const,
       labels: {
         font: {
-          size: 12
+          size: 12,
         },
-        padding: 20
-      }
+        padding: 20,
+      },
     },
     tooltip: {
       callbacks: {
-        label: function(tooltipItem: any) {
+        label: function (tooltipItem: any) {
           const label = tooltipItem.label || ''
           const value = tooltipItem.raw || 0
           const total = tooltipItem.dataset.data.reduce((a: number, b: number) => a + b, 0)
           const percentage = Math.round((value / total) * 100)
           return `${label}: ${value} (${percentage}%)`
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 }
 
 // Cấu hình options cho biểu đồ doanh thu
@@ -280,34 +298,34 @@ const lineChartOptions: any = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      display: false
+      display: false,
     },
     tooltip: {
       callbacks: {
-        label: function(tooltipItem: any) {
+        label: function (tooltipItem: any) {
           return `Revenue: $${formatNumber(tooltipItem.raw)}`
-        }
-      }
-    }
+        },
+      },
+    },
   },
   scales: {
     y: {
       beginAtZero: true,
       grid: {
-        color: 'rgba(0, 0, 0, 0.05)'
+        color: 'rgba(0, 0, 0, 0.05)',
       },
       ticks: {
-        callback: function(value: any) {
+        callback: function (value: any) {
           return '$' + formatNumber(value)
-        }
-      }
+        },
+      },
     },
     x: {
       grid: {
-        display: false
-      }
-    }
-  }
+        display: false,
+      },
+    },
+  },
 }
 
 // Format number with thousands separator
@@ -371,7 +389,7 @@ onMounted(() => {
         </TabsList>
       </Tabs>
     </div>
-    
+
     <!-- Inventory Status -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div class="flex items-center p-4 border rounded-lg bg-white shadow-sm">
@@ -383,7 +401,7 @@ onMounted(() => {
           <div class="text-2xl font-bold">{{ formatNumber(totalProducts) }}</div>
         </div>
       </div>
-      
+
       <div class="flex items-center p-4 border rounded-lg bg-white shadow-sm">
         <div class="mr-4 bg-yellow-100 p-3 rounded-full">
           <LucideBarChart class="h-6 w-6 text-yellow-600" />
@@ -393,7 +411,7 @@ onMounted(() => {
           <div class="text-2xl font-bold">{{ lowStockProducts }}</div>
         </div>
       </div>
-      
+
       <div class="flex items-center p-4 border rounded-lg bg-white shadow-sm">
         <div class="mr-4 bg-red-100 p-3 rounded-full">
           <LucideTruck class="h-6 w-6 text-red-600" />
@@ -513,16 +531,32 @@ onMounted(() => {
         </CardHeader>
         <CardContent class="p-2">
           <div class="space-y-2">
-            <div v-for="product in topProducts" :key="product.id" class="flex items-center justify-between py-2 px-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors">
+            <div
+              v-for="product in topProducts"
+              :key="product.id"
+              class="flex items-center justify-between py-2 px-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
+            >
               <div class="flex items-center gap-2">
-                <img :src="product.image" :alt="product.name" class="w-8 h-8 rounded-md object-cover" />
+                <img
+                  :src="product.image"
+                  :alt="product.name"
+                  class="w-8 h-8 rounded-md object-cover"
+                />
                 <div>
                   <div class="flex items-center gap-1">
-                    <router-link :to="`/product/${product.id}`" class="text-sm font-medium hover:text-primary hover:underline">{{ product.name }}</router-link>
+                    <router-link
+                      :to="`/product/${product.id}`"
+                      class="text-sm font-medium hover:text-primary hover:underline"
+                      >{{ product.name }}</router-link
+                    >
                     <span class="text-xs text-yellow-500">★ {{ product.rating }}</span>
                   </div>
                   <div class="flex items-center gap-1">
-                    <router-link :to="`/category/${product.category.toLowerCase()}`" class="text-xs text-blue-600 hover:underline">{{ product.category }}</router-link>
+                    <router-link
+                      :to="`/category/${product.category.toLowerCase()}`"
+                      class="text-xs text-blue-600 hover:underline"
+                      >{{ product.category }}</router-link
+                    >
                     <span class="text-xs text-muted-foreground">${{ product.price }}</span>
                   </div>
                 </div>
@@ -541,9 +575,15 @@ onMounted(() => {
                   <span class="font-medium">{{ product.stock }}</span>
                 </div>
                 <div class="flex items-center ml-2">
-                  <LucideArrowUpRight v-if="product.growth > 0" class="h-3 w-3 mr-0.5 text-green-500" />
+                  <LucideArrowUpRight
+                    v-if="product.growth > 0"
+                    class="h-3 w-3 mr-0.5 text-green-500"
+                  />
                   <LucideArrowDownRight v-else class="h-3 w-3 mr-0.5 text-red-500" />
-                  <span :class="product.growth > 0 ? 'text-green-500' : 'text-red-500'" class="text-xs font-medium">
+                  <span
+                    :class="product.growth > 0 ? 'text-green-500' : 'text-red-500'"
+                    class="text-xs font-medium"
+                  >
                     {{ Math.abs(product.growth) }}%
                   </span>
                 </div>

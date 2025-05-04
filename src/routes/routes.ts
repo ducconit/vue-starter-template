@@ -27,6 +27,24 @@ export default [
     },
   },
   {
+    path: '/user-management',
+    component: () => import('@/pages/user-management.vue'),
+    name: 'user-management',
+    meta: {
+      layout: 'AppLayout',
+      auth: true,
+    },
+  },
+  {
+    path: '/user-management/edit/:id',
+    component: () => import('@/pages/user-management-edit.vue'),
+    name: 'user-management-edit',
+    meta: {
+      layout: 'AppLayout',
+      auth: true,
+    },
+  },
+  {
     path: '/login',
     component: () => import('@/pages/login.vue'),
     name: 'login',

@@ -2,12 +2,39 @@
 import { setBreadcrumbs } from '@/composables/breadcrumbs'
 import { useHead } from '@unhead/vue'
 import { ref, onMounted, computed } from 'vue'
-import { LucideUsers, LucideEye, LucideBarChart, LucideArrowUpRight, LucideArrowDownRight, LucideActivity, LucideUserPlus } from 'lucide-vue-next'
+import {
+  LucideUsers,
+  LucideEye,
+  LucideBarChart,
+  LucideArrowUpRight,
+  LucideArrowDownRight,
+  LucideActivity,
+  LucideUserPlus,
+} from 'lucide-vue-next'
 import { Pie, Line } from 'vue-chartjs'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from 'chart.js'
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+} from 'chart.js'
 
 // Đăng ký các thành phần cần thiết cho biểu đồ
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title)
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+)
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -29,7 +56,7 @@ const deviceData = ref({
   desktop: 5842,
   mobile: 4127,
   tablet: 1896,
-  unknown: 593
+  unknown: 593,
 })
 const todayNewUsers = ref(24)
 const bounceRate = ref(32.5)
@@ -77,11 +104,11 @@ const trafficData = ref(monthlyTrafficData)
 
 // Cấu hình biểu đồ đường cho Traffic Overview
 const trafficChartData = computed(() => ({
-  labels: trafficData.value.map(item => item.label),
+  labels: trafficData.value.map((item) => item.label),
   datasets: [
     {
       label: 'Page Views',
-      data: trafficData.value.map(item => item.value),
+      data: trafficData.value.map((item) => item.value),
       borderColor: 'rgba(75, 192, 192, 1)',
       backgroundColor: 'rgba(75, 192, 192, 0.2)',
       tension: 0.4,
@@ -90,9 +117,9 @@ const trafficChartData = computed(() => ({
       pointBorderColor: '#fff',
       pointBorderWidth: 2,
       pointRadius: 4,
-      pointHoverRadius: 6
-    }
-  ]
+      pointHoverRadius: 6,
+    },
+  ],
 }))
 
 // Cấu hình options cho biểu đồ đường
@@ -101,34 +128,34 @@ const lineChartOptions: any = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      display: false
+      display: false,
     },
     tooltip: {
       callbacks: {
-        label: function(tooltipItem: any) {
+        label: function (tooltipItem: any) {
           return `Page Views: ${formatNumber(tooltipItem.raw)}`
-        }
-      }
-    }
+        },
+      },
+    },
   },
   scales: {
     y: {
       beginAtZero: true,
       grid: {
-        color: 'rgba(0, 0, 0, 0.05)'
+        color: 'rgba(0, 0, 0, 0.05)',
       },
       ticks: {
-        callback: function(value: any) {
+        callback: function (value: any) {
           return formatNumber(value)
-        }
-      }
+        },
+      },
     },
     x: {
       grid: {
-        display: false
-      }
-    }
-  }
+        display: false,
+      },
+    },
+  },
 }
 
 // Sample data for top pages
@@ -145,22 +172,27 @@ const deviceChartData = computed(() => ({
   labels: ['Desktop', 'Mobile', 'Tablet', 'Unknown'],
   datasets: [
     {
-      data: [deviceData.value.desktop, deviceData.value.mobile, deviceData.value.tablet, deviceData.value.unknown],
+      data: [
+        deviceData.value.desktop,
+        deviceData.value.mobile,
+        deviceData.value.tablet,
+        deviceData.value.unknown,
+      ],
       backgroundColor: [
         'rgba(54, 162, 235, 0.8)', // Desktop - Blue
-        'rgba(255, 99, 132, 0.8)',  // Mobile - Red
-        'rgba(75, 192, 192, 0.8)',  // Tablet - Green
-        'rgba(201, 203, 207, 0.8)'  // Unknown - Gray
+        'rgba(255, 99, 132, 0.8)', // Mobile - Red
+        'rgba(75, 192, 192, 0.8)', // Tablet - Green
+        'rgba(201, 203, 207, 0.8)', // Unknown - Gray
       ],
       borderColor: [
         'rgba(54, 162, 235, 1)',
         'rgba(255, 99, 132, 1)',
         'rgba(75, 192, 192, 1)',
-        'rgba(201, 203, 207, 1)'
+        'rgba(201, 203, 207, 1)',
       ],
-      borderWidth: 1
-    }
-  ]
+      borderWidth: 1,
+    },
+  ],
 }))
 
 // Cấu hình options cho biểu đồ
@@ -172,10 +204,10 @@ const chartOptions = {
       position: 'bottom' as const,
       labels: {
         font: {
-          size: 12
+          size: 12,
         },
-        padding: 20
-      }
+        padding: 20,
+      },
     },
     tooltip: {
       callbacks: {
@@ -185,10 +217,10 @@ const chartOptions = {
           const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0)
           const percentage = Math.round((value / total) * 100)
           return `${label}: ${value} (${percentage}%)`
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 }
 
 // Format number with thousands separator
@@ -301,7 +333,9 @@ onMounted(() => {
         <CardContent>
           <div class="flex items-baseline space-x-2">
             <div class="text-2xl font-bold">{{ formatNumber(activeUsers) }}</div>
-            <span class="text-xs text-muted-foreground">({{ Math.round(activeUsers/totalUsers*100) }}%)</span>
+            <span class="text-xs text-muted-foreground"
+              >({{ Math.round((activeUsers / totalUsers) * 100) }}%)</span
+            >
           </div>
           <p class="text-xs text-muted-foreground">Active in the last 30 days</p>
         </CardContent>
@@ -384,7 +418,11 @@ onMounted(() => {
         </CardHeader>
         <CardContent>
           <div class="space-y-4">
-            <div v-for="(page, index) in topPages" :key="index" class="flex items-center justify-between">
+            <div
+              v-for="(page, index) in topPages"
+              :key="index"
+              class="flex items-center justify-between"
+            >
               <div class="flex items-center space-x-2">
                 <span class="text-sm font-medium">{{ page.name }}</span>
               </div>
@@ -450,9 +488,14 @@ onMounted(() => {
                 <span class="text-sm font-medium">{{ bounceRate }}%</span>
               </div>
               <div class="h-2 w-full rounded-full bg-muted">
-                <div class="h-full rounded-full bg-yellow-500" :style="{ width: `${bounceRate}%` }"></div>
+                <div
+                  class="h-full rounded-full bg-yellow-500"
+                  :style="{ width: `${bounceRate}%` }"
+                ></div>
               </div>
-              <p class="text-xs text-muted-foreground">Percentage of visitors who leave after viewing only one page</p>
+              <p class="text-xs text-muted-foreground">
+                Percentage of visitors who leave after viewing only one page
+              </p>
             </div>
 
             <!-- New Users -->
@@ -462,7 +505,10 @@ onMounted(() => {
                 <span class="text-sm font-medium">{{ formatNumber(newUsers) }}</span>
               </div>
               <div class="h-2 w-full rounded-full bg-muted">
-                <div class="h-full rounded-full bg-green-500" :style="{ width: `${(newUsers/totalUsers)*100}%` }"></div>
+                <div
+                  class="h-full rounded-full bg-green-500"
+                  :style="{ width: `${(newUsers / totalUsers) * 100}%` }"
+                ></div>
               </div>
               <p class="text-xs text-muted-foreground">Users who registered in the last 30 days</p>
             </div>

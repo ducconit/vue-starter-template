@@ -30,10 +30,10 @@ const props = defineProps<{
 }>()
 
 // Check if a menu item is active based on the current route
-const isItemActive = (item: { url: string, items?: { url: string }[] }) => {
+const isItemActive = (item: { url: string; items?: { url: string }[] }) => {
   // If the item has children, check if any of them match the current route
   if (item.items && item.items.length > 0) {
-    return item.items.some(subItem => subItem.url === route.path)
+    return item.items.some((subItem) => subItem.url === route.path)
   }
   // Otherwise check if the item itself matches the current route
   return item.url === route.path
@@ -41,9 +41,9 @@ const isItemActive = (item: { url: string, items?: { url: string }[] }) => {
 
 // Compute active state for each item
 const menuItems = computed(() => {
-  return props.items.map(item => ({
+  return props.items.map((item) => ({
     ...item,
-    isActive: isItemActive(item) || item.isActive
+    isActive: isItemActive(item) || item.isActive,
   }))
 })
 </script>
@@ -73,7 +73,10 @@ const menuItems = computed(() => {
             <SidebarMenuSub>
               <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
                 <SidebarMenuSubButton as-child :is-active="route.path === subItem.url">
-                  <router-link :to="subItem.url" :class="{ 'font-semibold': route.path === subItem.url }">
+                  <router-link
+                    :to="subItem.url"
+                    :class="{ 'font-semibold': route.path === subItem.url }"
+                  >
                     <span>{{ subItem.title }}</span>
                   </router-link>
                 </SidebarMenuSubButton>

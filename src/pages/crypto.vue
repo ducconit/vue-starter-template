@@ -23,11 +23,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import {
   Select,
@@ -56,7 +52,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
 )
 
 // No longer needed, using formatCurrency instead
@@ -119,10 +115,10 @@ const cryptoAssets = ref([
     id: 'usdt',
     name: 'Tether',
     symbol: 'USDT',
-    price: 1.00,
+    price: 1.0,
     change24h: 0.01,
     amount: 4520,
-    value: 4520.00,
+    value: 4520.0,
     color: '#26A17B',
     icon: DollarSign,
     history: [1, 1, 1, 1, 1, 1, 1],
@@ -149,19 +145,64 @@ const volumeData = [
 // Dữ liệu phân bổ danh mục đầu tư
 const portfolioAllocation = computed(() => {
   const total = cryptoAssets.value.reduce((sum, asset) => sum + asset.value, 0)
-  return cryptoAssets.value.map(asset => ({
+  return cryptoAssets.value.map((asset) => ({
     ...asset,
-    percentage: (asset.value / total) * 100
+    percentage: (asset.value / total) * 100,
   }))
 })
 
 // Dữ liệu lịch sử giao dịch
 const recentTransactions = ref([
-  { id: 'tx1', type: 'buy', coin: 'Bitcoin', symbol: 'BTC', amount: 0.05, price: 43100, date: '2025-05-04', status: 'completed' },
-  { id: 'tx2', type: 'sell', coin: 'Ethereum', symbol: 'ETH', amount: 1.2, price: 3150, date: '2025-05-03', status: 'completed' },
-  { id: 'tx3', type: 'buy', coin: 'Solana', symbol: 'SOL', amount: 10, price: 101, date: '2025-05-02', status: 'completed' },
-  { id: 'tx4', type: 'transfer', coin: 'Bitcoin', symbol: 'BTC', amount: 0.02, price: 42900, date: '2025-05-01', status: 'completed' },
-  { id: 'tx5', type: 'buy', coin: 'Tether', symbol: 'USDT', amount: 500, price: 1, date: '2025-04-30', status: 'completed' },
+  {
+    id: 'tx1',
+    type: 'buy',
+    coin: 'Bitcoin',
+    symbol: 'BTC',
+    amount: 0.05,
+    price: 43100,
+    date: '2025-05-04',
+    status: 'completed',
+  },
+  {
+    id: 'tx2',
+    type: 'sell',
+    coin: 'Ethereum',
+    symbol: 'ETH',
+    amount: 1.2,
+    price: 3150,
+    date: '2025-05-03',
+    status: 'completed',
+  },
+  {
+    id: 'tx3',
+    type: 'buy',
+    coin: 'Solana',
+    symbol: 'SOL',
+    amount: 10,
+    price: 101,
+    date: '2025-05-02',
+    status: 'completed',
+  },
+  {
+    id: 'tx4',
+    type: 'transfer',
+    coin: 'Bitcoin',
+    symbol: 'BTC',
+    amount: 0.02,
+    price: 42900,
+    date: '2025-05-01',
+    status: 'completed',
+  },
+  {
+    id: 'tx5',
+    type: 'buy',
+    coin: 'Tether',
+    symbol: 'USDT',
+    amount: 500,
+    price: 1,
+    date: '2025-04-30',
+    status: 'completed',
+  },
 ])
 
 // Cấu hình biểu đồ đường
@@ -187,11 +228,11 @@ const priceChartOptions = {
     },
     tooltip: {
       callbacks: {
-        label: function(context: any) {
+        label: function (context: any) {
           return `${context.dataset.label}: $${context.raw.toLocaleString()}`
-        }
-      }
-    }
+        },
+      },
+    },
   },
   interaction: {
     mode: 'index' as const,
@@ -235,21 +276,21 @@ const priceChartData = computed(() => ({
 
 // Dữ liệu biểu đồ khối lượng
 const volumeChartData = computed(() => ({
-  labels: volumeData.map(item => item.date),
+  labels: volumeData.map((item) => item.date),
   datasets: [
     {
       label: 'Bitcoin',
-      data: volumeData.map(item => item.btc),
+      data: volumeData.map((item) => item.btc),
       backgroundColor: 'rgba(247, 147, 26, 0.7)',
     },
     {
       label: 'Ethereum',
-      data: volumeData.map(item => item.eth),
+      data: volumeData.map((item) => item.eth),
       backgroundColor: 'rgba(98, 126, 234, 0.7)',
     },
     {
       label: 'Solana',
-      data: volumeData.map(item => item.sol),
+      data: volumeData.map((item) => item.sol),
       backgroundColor: 'rgba(0, 255, 163, 0.7)',
     },
   ],
@@ -279,11 +320,11 @@ const volumeChartOptions = {
     },
     tooltip: {
       callbacks: {
-        label: function(context: any) {
+        label: function (context: any) {
           return `${context.dataset.label}: ${context.raw.toLocaleString()} transactions`
-        }
-      }
-    }
+        },
+      },
+    },
   },
 }
 
@@ -351,9 +392,15 @@ const timeframe = ref('7d')
         <CardContent>
           <div class="text-2xl font-bold">{{ formatCurrency(cryptoAssets[0].price) }}</div>
           <div class="flex items-center pt-1">
-            <ArrowUpRight v-if="cryptoAssets[0].change24h > 0" class="h-4 w-4 mr-1 text-green-500" />
+            <ArrowUpRight
+              v-if="cryptoAssets[0].change24h > 0"
+              class="h-4 w-4 mr-1 text-green-500"
+            />
             <ArrowDownRight v-else class="h-4 w-4 mr-1 text-red-500" />
-            <span :class="cryptoAssets[0].change24h > 0 ? 'text-green-500' : 'text-red-500'" class="text-xs">
+            <span
+              :class="cryptoAssets[0].change24h > 0 ? 'text-green-500' : 'text-red-500'"
+              class="text-xs"
+            >
               {{ Math.abs(cryptoAssets[0].change24h) }}%
             </span>
             <span class="text-xs text-muted-foreground ml-1">24h</span>
@@ -406,13 +453,23 @@ const timeframe = ref('7d')
         </CardHeader>
         <CardContent>
           <div class="space-y-4">
-            <div v-for="asset in portfolioAllocation" :key="asset.id" class="flex items-center justify-between">
+            <div
+              v-for="asset in portfolioAllocation"
+              :key="asset.id"
+              class="flex items-center justify-between"
+            >
               <div class="flex items-center gap-2">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full" :style="`background-color: ${asset.color}25`">
+                <div
+                  class="flex h-8 w-8 items-center justify-center rounded-full"
+                  :style="`background-color: ${asset.color}25`"
+                >
                   <component :is="asset.icon" class="h-4 w-4" :style="`color: ${asset.color}`" />
                 </div>
                 <div>
-                  <router-link :to="`/crypto/${asset.id}`" class="text-sm font-medium hover:underline">
+                  <router-link
+                    :to="`/crypto/${asset.id}`"
+                    class="text-sm font-medium hover:underline"
+                  >
                     {{ asset.name }}
                   </router-link>
                   <div class="flex items-center text-xs text-muted-foreground">
@@ -425,7 +482,10 @@ const timeframe = ref('7d')
                 <div class="flex items-center text-xs">
                   <span class="text-muted-foreground">{{ asset.percentage.toFixed(1) }}%</span>
                   <div class="ml-2 flex items-center">
-                    <ArrowUpRight v-if="asset.change24h > 0" class="h-3 w-3 mr-0.5 text-green-500" />
+                    <ArrowUpRight
+                      v-if="asset.change24h > 0"
+                      class="h-3 w-3 mr-0.5 text-green-500"
+                    />
                     <ArrowDownRight v-else class="h-3 w-3 mr-0.5 text-red-500" />
                     <span :class="asset.change24h > 0 ? 'text-green-500' : 'text-red-500'">
                       {{ Math.abs(asset.change24h) }}%
@@ -462,17 +522,30 @@ const timeframe = ref('7d')
         </CardHeader>
         <CardContent>
           <div class="space-y-4">
-            <div v-for="tx in recentTransactions" :key="tx.id" class="flex items-center justify-between border-b pb-2 last:border-b-0 last:pb-0">
+            <div
+              v-for="tx in recentTransactions"
+              :key="tx.id"
+              class="flex items-center justify-between border-b pb-2 last:border-b-0 last:pb-0"
+            >
               <div class="flex items-center gap-2">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full" 
-                     :class="tx.type === 'buy' ? 'bg-green-100' : tx.type === 'sell' ? 'bg-red-100' : 'bg-blue-100'">
+                <div
+                  class="flex h-8 w-8 items-center justify-center rounded-full"
+                  :class="
+                    tx.type === 'buy'
+                      ? 'bg-green-100'
+                      : tx.type === 'sell'
+                        ? 'bg-red-100'
+                        : 'bg-blue-100'
+                  "
+                >
                   <ArrowUpRight v-if="tx.type === 'buy'" class="h-4 w-4 text-green-500" />
                   <ArrowDownRight v-if="tx.type === 'sell'" class="h-4 w-4 text-red-500" />
                   <Wallet v-if="tx.type === 'transfer'" class="h-4 w-4 text-blue-500" />
                 </div>
                 <div>
                   <div class="text-sm font-medium">
-                    {{ tx.type === 'buy' ? 'Buy' : tx.type === 'sell' ? 'Sell' : 'Transfer' }} {{ tx.coin }}
+                    {{ tx.type === 'buy' ? 'Buy' : tx.type === 'sell' ? 'Sell' : 'Transfer' }}
+                    {{ tx.coin }}
                   </div>
                   <div class="text-xs text-muted-foreground">
                     {{ new Date(tx.date).toLocaleDateString('en-US') }}
@@ -480,9 +553,7 @@ const timeframe = ref('7d')
                 </div>
               </div>
               <div class="flex flex-col items-end">
-                <div class="text-sm font-medium">
-                  {{ tx.amount }} {{ tx.symbol }}
-                </div>
+                <div class="text-sm font-medium">{{ tx.amount }} {{ tx.symbol }}</div>
                 <div class="text-xs text-muted-foreground">
                   {{ formatCurrency(tx.price * tx.amount) }}
                 </div>
@@ -491,7 +562,9 @@ const timeframe = ref('7d')
           </div>
         </CardContent>
         <CardFooter>
-          <router-link to="/transactions" class="text-sm text-primary hover:underline">View all transactions</router-link>
+          <router-link to="/transactions" class="text-sm text-primary hover:underline"
+            >View all transactions</router-link
+          >
         </CardFooter>
       </Card>
     </div>

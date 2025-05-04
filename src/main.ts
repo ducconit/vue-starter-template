@@ -8,6 +8,7 @@ import { startMockServer } from './plugins/miragejs'
 import { i18n } from './plugins/i18n'
 import store from './stores'
 import router from './routes'
+import dayjs from './plugins/dayjs'
 
 if (import.meta.env.VITE_MOCK_SERVER === 'true') {
   startMockServer()
@@ -21,5 +22,6 @@ app.use(i18n)
 app.use(store)
 app.use(router)
 app.use(head)
+app.use(dayjs)
 
 app.mount('#app')
