@@ -14,4 +14,9 @@ export default [
     component: () => import('@/pages/forgot-password.vue'),
     name: 'forgot-password',
   },
+  {
+    path: '/signup',
+    component: () => import('@/pages/signup.vue'),
+    name: 'signup',
+  },
 ]

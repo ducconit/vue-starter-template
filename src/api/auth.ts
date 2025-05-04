@@ -4,3 +4,4 @@ export const apiLogin = (credentials: object) => guestClient.post('/auth/login',
 export const apiLogout = () => guestClient.post('/auth/logout')
 export const apiForgotPassword = (payload: object) =>
   guestClient.post('/auth/forgot-password', payload)
+export const apiRegister = (payload: object) => guestClient.post('/auth/register', payload)
