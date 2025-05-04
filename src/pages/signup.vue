@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import EmptyLayout from '@/layouts/EmptyLayout.vue'
 import { useHead } from '@unhead/vue'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -57,74 +56,72 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <EmptyLayout>
-    <div class="flex h-screen w-full items-center justify-center px-4">
-      <div class="flex flex-col gap-6">
-        <Card class="mx-auto max-w-sm">
-          <CardHeader>
-            <CardTitle class="text-xl"> Sign Up </CardTitle>
-            <CardDescription> Enter your information to create an account </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form @submit="onSubmit" class="grid gap-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="grid gap-2">
-                  <FormField name="first_name" v-slot="{ componentField }">
-                    <FormItem>
-                      <FormLabel>First name</FormLabel>
-                      <FormControl>
-                        <Input v-bind="componentField" placeholder="Max" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </FormField>
-                </div>
-                <div class="grid gap-2">
-                  <FormField name="last_name" v-slot="{ componentField }">
-                    <FormItem>
-                      <FormLabel>Last name</FormLabel>
-                      <FormControl>
-                        <Input v-bind="componentField" placeholder="Robinson" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </FormField>
-                </div>
-              </div>
+  <div class="flex h-screen w-full items-center justify-center px-4">
+    <div class="flex flex-col gap-6">
+      <Card class="mx-auto max-w-sm">
+        <CardHeader>
+          <CardTitle class="text-xl"> Sign Up </CardTitle>
+          <CardDescription> Enter your information to create an account </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form @submit="onSubmit" class="grid gap-4">
+            <div class="grid grid-cols-2 gap-4">
               <div class="grid gap-2">
-                <FormField name="email" v-slot="{ componentField }">
+                <FormField name="first_name" v-slot="{ componentField }">
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>First name</FormLabel>
                     <FormControl>
-                      <Input v-bind="componentField" type="email" placeholder="m@example.com" />
+                      <Input v-bind="componentField" placeholder="Max" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 </FormField>
               </div>
               <div class="grid gap-2">
-                <FormField name="password" v-slot="{ componentField }">
+                <FormField name="last_name" v-slot="{ componentField }">
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Last name</FormLabel>
                     <FormControl>
-                      <Input v-bind="componentField" type="password" />
+                      <Input v-bind="componentField" placeholder="Robinson" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 </FormField>
               </div>
-              <Button type="submit" class="w-full" :disabled="isSubmitting">
-                Create an account
-              </Button>
-              <Button variant="outline" class="w-full"> Sign up with GitHub </Button>
-            </form>
-            <div class="mt-4 text-center text-sm">
-              Already have an account?
-              <RouterLink :to="{ name: 'login' }" class="underline"> Sign in </RouterLink>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div class="grid gap-2">
+              <FormField name="email" v-slot="{ componentField }">
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input v-bind="componentField" type="email" placeholder="m@example.com" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+            <div class="grid gap-2">
+              <FormField name="password" v-slot="{ componentField }">
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input v-bind="componentField" type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+            <Button type="submit" class="w-full" :disabled="isSubmitting">
+              Create an account
+            </Button>
+            <Button variant="outline" class="w-full"> Sign up with GitHub </Button>
+          </form>
+          <div class="mt-4 text-center text-sm">
+            Already have an account?
+            <RouterLink :to="{ name: 'login' }" class="underline"> Sign in </RouterLink>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  </EmptyLayout>
+  </div>
 </template>

@@ -24,6 +24,7 @@ declare module 'vue' {
     AlertDialogTitle: typeof import('./src/components/ui/alert-dialog/AlertDialogTitle.vue')['default']
     AlertDialogTrigger: typeof import('./src/components/ui/alert-dialog/AlertDialogTrigger.vue')['default']
     AlertTitle: typeof import('./src/components/ui/alert/AlertTitle.vue')['default']
+    AppError: typeof import('./src/components/AppError.vue')['default']
     AppLayout: typeof import('./src/layouts/AppLayout.vue')['default']
     AppSidebar: typeof import('./src/components/AppSidebar.vue')['default']
     AspectRatio: typeof import('./src/components/ui/aspect-ratio/AspectRatio.vue')['default']

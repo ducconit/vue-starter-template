@@ -3,6 +3,9 @@ export default [
     path: '/',
     component: () => import('@/pages/index.vue'),
     name: 'home',
+    meta: {
+      layout: 'AppLayout',
+    },
   },
   {
     path: '/login',

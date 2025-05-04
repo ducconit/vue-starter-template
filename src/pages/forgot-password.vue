@@ -55,84 +55,82 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <EmptyLayout>
-    <div class="flex h-screen w-full items-center justify-center px-4">
-      <div class="flex flex-col gap-6 mx-auto w-full max-w-sm">
-        <Card v-if="!isSendEmail">
-          <CardHeader class="text-center">
-            <CardTitle class="text-xl"> Forgot Password </CardTitle>
-            <CardDescription> No worries, we'll send you reset instructions </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form @submit.prevent="onSubmit">
+  <div class="flex h-screen w-full items-center justify-center px-4">
+    <div class="flex flex-col gap-6 mx-auto w-full max-w-sm">
+      <Card v-if="!isSendEmail">
+        <CardHeader class="text-center">
+          <CardTitle class="text-xl"> Forgot Password </CardTitle>
+          <CardDescription> No worries, we'll send you reset instructions </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form @submit.prevent="onSubmit">
+            <div class="grid gap-6">
               <div class="grid gap-6">
-                <div class="grid gap-6">
-                  <div class="grid gap-3">
-                    <FormField name="email" v-slot="{ componentField }">
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            v-bind="componentField"
-                            placeholder="john@example.com"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    </FormField>
-                  </div>
-                  <Button type="submit" class="w-full" :disabled="isSubmitting">
-                    Send instructions
-                  </Button>
+                <div class="grid gap-3">
+                  <FormField name="email" v-slot="{ componentField }">
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          v-bind="componentField"
+                          placeholder="john@example.com"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
                 </div>
-                <div class="text-center text-sm">
-                  Don't have an account?
-                  <RouterLink :to="{ name: 'signup' }" class="underline underline-offset-4">
-                    Sign up
-                  </RouterLink>
-                </div>
+                <Button type="submit" class="w-full" :disabled="isSubmitting">
+                  Send instructions
+                </Button>
               </div>
-            </form>
-            <p class="mt-8 text-center text-sm">
-              <RouterLink
-                class="font-semibold text-primary underline-offset-2 hover:underline"
-                :to="{ name: 'login' }"
-              >
-                Back to Log in
-              </RouterLink>
-            </p>
-          </CardContent>
-        </Card>
-        <Card v-else>
-          <CardHeader class="text-center">
-            <CardTitle class="text-xl"> Check your inbox </CardTitle>
-            <CardDescription>
-              We've sent you an email with instructions to reset your password
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div>
-              <div class="grid gap-6">
-                <div class="grid gap-6">
-                  <Button class="w-full mt-4" type="button" @click.prevent="isSendEmail = false">
-                    <ArrowLeft class="size-5" />
-                    <span>Resend instructions</span>
-                  </Button>
-                  <p class="mt-4 text-center text-sm">
-                    <RouterLink
-                      class="font-semibold text-primary underline-offset-2 hover:underline"
-                      :to="{ name: 'login' }"
-                    >
-                      Back to Log in
-                    </RouterLink>
-                  </p>
-                </div>
+              <div class="text-center text-sm">
+                Don't have an account?
+                <RouterLink :to="{ name: 'signup' }" class="underline underline-offset-4">
+                  Sign up
+                </RouterLink>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </form>
+          <p class="mt-8 text-center text-sm">
+            <RouterLink
+              class="font-semibold text-primary underline-offset-2 hover:underline"
+              :to="{ name: 'login' }"
+            >
+              Back to Log in
+            </RouterLink>
+          </p>
+        </CardContent>
+      </Card>
+      <Card v-else>
+        <CardHeader class="text-center">
+          <CardTitle class="text-xl"> Check your inbox </CardTitle>
+          <CardDescription>
+            We've sent you an email with instructions to reset your password
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div>
+            <div class="grid gap-6">
+              <div class="grid gap-6">
+                <Button class="w-full mt-4" type="button" @click.prevent="isSendEmail = false">
+                  <ArrowLeft class="size-5" />
+                  <span>Resend instructions</span>
+                </Button>
+                <p class="mt-4 text-center text-sm">
+                  <RouterLink
+                    class="font-semibold text-primary underline-offset-2 hover:underline"
+                    :to="{ name: 'login' }"
+                  >
+                    Back to Log in
+                  </RouterLink>
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  </EmptyLayout>
+  </div>
 </template>

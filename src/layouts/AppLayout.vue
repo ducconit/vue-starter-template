@@ -44,7 +44,13 @@ import { breadcrumbs } from '@/composables/breadcrumbs'
         </div>
       </header>
       <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <slot />
+        <router-view v-slot="{ Component }">
+          <Transition name="fade" mode="out-in">
+            <div v-if="Component">
+              <Component :is="Component" />
+            </div>
+          </Transition>
+        </router-view>
       </div>
     </SidebarInset>
   </SidebarProvider>
