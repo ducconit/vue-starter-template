@@ -23,4 +23,27 @@ export default function (srv: Server) {
       },
     )
   })
+
+  srv.post('/auth/forgot-password', (schema, request) => {
+    const { email } = JSON.parse(request.requestBody)
+    const user = schema.db.users.findBy((u: any) => u.email === email)
+    if (user) {
+      return new Response(
+        200,
+        {},
+        {
+          err_code: 0,
+          err_msg: 'Success',
+        },
+      )
+    }
+    return new Response(
+      400,
+      {},
+      {
+        err_msg: 'User not found',
+        err_code: 1,
+      },
+    )
+  })
 }

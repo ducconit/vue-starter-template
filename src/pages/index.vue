@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { useTitle } from '@vueuse/core'
 import { setBreadcrumbs } from '@/composables/breadcrumbs'
+import { useHead } from '@unhead/vue'
 
-useTitle('Home')
+useHead({
+  title: 'Dashboard',
+  meta: [{ name: 'description', content: 'Welcome to Dashboard' }],
+})
 
-setBreadcrumbs([{ name: 'Home' }])
+setBreadcrumbs([{ name: 'Dashboard' }])
 </script>
 
 <template>

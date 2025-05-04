@@ -5,13 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'vue-sonner'
-import { useTitle } from '@vueuse/core'
+import { useHead } from '@unhead/vue'
 import { useMutation } from '@tanstack/vue-query'
 import { apiLogin } from '@/api'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores'
 
-useTitle('Login')
+useHead({
+  title: 'Login',
+  meta: [{ name: 'description', content: 'Login to your account' }],
+})
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -69,9 +72,12 @@ const onSubmit = async () => {
                   <div class="grid gap-3">
                     <div class="flex items-center">
                       <Label for="password">Password</Label>
-                      <a href="#" class="ml-auto text-sm underline-offset-4 hover:underline">
+                      <RouterLink
+                        :to="{ name: 'forgot-password' }"
+                        class="ml-auto text-sm underline-offset-4 hover:underline"
+                      >
                         Forgot your password?
-                      </a>
+                      </RouterLink>
                     </div>
                     <Input
                       id="password"
