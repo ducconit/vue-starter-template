@@ -85,6 +85,10 @@ const data = {
           title: 'User List',
           url: '/user-management',
         },
+        {
+          title: 'Create User',
+          url: '/user-management/create',
+        },
       ],
     },
     {

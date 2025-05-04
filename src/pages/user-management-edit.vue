@@ -307,8 +307,8 @@ const formatDate = (dateString: string) => {
             </div>
 
             <!-- Giới thiệu -->
-            <FormField name="bio" v-slot="{ componentField }" class="mt-6">
-              <FormItem>
+            <FormField name="bio" v-slot="{ componentField }">
+              <FormItem class="mt-6">
                 <FormLabel>Bio</FormLabel>
                 <FormControl>
                   <Textarea
@@ -321,8 +321,10 @@ const formatDate = (dateString: string) => {
             </FormField>
 
             <!-- Gửi thông báo -->
-            <FormField name="sendNotification" v-slot="{ componentField }" class="mt-6">
-              <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormField name="sendNotification" v-slot="{ componentField }">
+              <FormItem
+                class="flex flex-row items-center justify-between rounded-lg border p-4 mt-6"
+              >
                 <div class="space-y-0.5">
                   <FormLabel>Send Notification</FormLabel>
                   <FormDescription>

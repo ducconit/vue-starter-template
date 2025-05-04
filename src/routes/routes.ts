@@ -45,6 +45,15 @@ export default [
     },
   },
   {
+    path: '/user-management/create',
+    component: () => import('@/pages/user-management-create.vue'),
+    name: 'user-management-create',
+    meta: {
+      layout: 'AppLayout',
+      auth: true,
+    },
+  },
+  {
     path: '/login',
     component: () => import('@/pages/login.vue'),
     name: 'login',

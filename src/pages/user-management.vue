@@ -66,6 +66,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { RouterLink } from 'vue-router'
 
 // Utility functions
 const getInitials = (name: string) => {
@@ -229,7 +230,7 @@ const deleteUser = () => {
     // Tìm và xóa người dùng theo ID
     users.value = users.value.filter((user) => user.id !== userToDelete.value)
     console.log('Deleted user with ID:', userToDelete.value)
-    
+
     // Reset state và đóng dialog
     userToDelete.value = null
     isDeleteDialogOpen.value = false
@@ -447,9 +448,9 @@ const columns: ColumnDef<User>[] = [
             default: () => [
               h(TooltipTrigger, { asChild: true }, [
                 h(
-                  'a',
+                  RouterLink,
                   {
-                    href: `#/user-management/edit/${user.id}`,
+                    to: { name: 'user-management-edit', params: { id: user.id } },
                     class:
                       'inline-flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background p-0 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
                   },
@@ -549,9 +550,11 @@ const table = useVueTable({
             <DropdownMenuItem @click="exportData('pdf')">Export as PDF</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button>
-          <Plus class="mr-2 h-4 w-4" />
-          Add User
+        <Button asChild>
+          <router-link to="/user-management/create" class="flex items-center">
+            <Plus class="mr-2 h-4 w-4" />
+            Add User
+          </router-link>
         </Button>
       </div>
 
