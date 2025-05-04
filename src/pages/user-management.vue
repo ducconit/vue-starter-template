@@ -217,9 +217,25 @@ const filteredUsers = computed(() => {
   })
 })
 
+// Show delete confirmation dialog
+const showDeleteConfirm = (userId: number) => {
+  userToDelete.value = userId
+  isDeleteDialogOpen.value = true
+}
+
 // Handle user deletion
-const deleteUser = (userId: number) => {
-  users.value = users.value.filter((user) => user.id !== userId)
+const deleteUser = () => {
+  if (userToDelete.value) {
+    // Tìm và xóa người dùng theo ID
+    users.value = users.value.filter((user) => user.id !== userToDelete.value)
+    console.log('Deleted user with ID:', userToDelete.value)
+    
+    // Reset state và đóng dialog
+    userToDelete.value = null
+    isDeleteDialogOpen.value = false
+  } else {
+    console.error('No user selected for deletion')
+  }
 }
 
 // Handle data export
@@ -232,6 +248,10 @@ const exportData = (type = '') => {
 const isImportDialogOpen = ref(false)
 const importFile = ref<File | null>(null)
 const importError = ref('')
+
+// Delete confirmation dialog state
+const isDeleteDialogOpen = ref(false)
+const userToDelete = ref<number | null>(null)
 
 // Handle data import
 const importData = () => {
@@ -451,7 +471,7 @@ const columns: ColumnDef<User>[] = [
                   {
                     variant: 'ghost',
                     size: 'icon',
-                    onClick: () => deleteUser(user.id),
+                    onClick: () => showDeleteConfirm(user.id),
                   },
                   [h(Trash2, { class: 'h-4 w-4' }), h('span', { class: 'sr-only' }, 'Delete')],
                 ),
@@ -577,6 +597,23 @@ const table = useVueTable({
           <DialogFooter>
             <Button variant="outline" @click="isImportDialogOpen = false"> Cancel </Button>
             <Button @click="processImport"> Import </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <!-- Delete Confirmation Dialog -->
+      <Dialog v-model:open="isDeleteDialogOpen">
+        <DialogContent class="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this user? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter class="mt-4">
+            <Button variant="outline" @click="isDeleteDialogOpen = false"> Cancel </Button>
+            <Button variant="destructive" @click="deleteUser"> Delete </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
