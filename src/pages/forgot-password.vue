@@ -4,7 +4,7 @@ import { useForm } from 'vee-validate'
 import { toast } from 'vue-sonner'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { KeyRound, Mail, ArrowLeft } from 'lucide-vue-next'
+import { ArrowLeft } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -12,7 +12,6 @@ import { useHead } from '@unhead/vue'
 import { apiForgotPassword } from '@/api'
 import { useMutation } from '@tanstack/vue-query'
 
-const description = "No worries, we'll send you reset instructions."
 const isSendEmail = ref(false)
 
 useHead({
@@ -58,36 +57,42 @@ const onSubmit = handleSubmit(async (values) => {
 <template>
   <EmptyLayout>
     <div class="flex h-screen w-full items-center justify-center px-4">
-      <div class="flex flex-col gap-6">
-        <div class="relative flex h-screen items-center justify-center">
-          <div
-            class="absolute inset-0 z-[1] bg-[linear-gradient(to_right,theme(colors.border)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.border)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(circle,transparent_25%,theme(colors.border)_100%)]"
-          />
-          <div v-if="!isSendEmail" class="relative z-[2] w-full max-w-[340px] px-5">
-            <div
-              class="mx-auto mb-6 flex size-14 items-center justify-center rounded-lg border bg-background"
-            >
-              <KeyRound class="size-6" />
-            </div>
-
-            <div class="flex flex-col items-center text-center">
-              <h1 class="text-2xl font-bold tracking-tight lg:text-3xl">Forgot Password</h1>
-              <p class="mt-1 text-muted-foreground">{{ description }}</p>
-            </div>
-
-            <form class="mt-10 grid gap-5" @submit="onSubmit">
-              <FormField name="email" v-slot="{ componentField }">
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" v-bind="componentField" placeholder="john@example.com" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-              <Button class="w-full" type="submit" :disabled="isSubmitting">
-                Send instructions
-              </Button>
+      <div class="flex flex-col gap-6 mx-auto w-full max-w-sm">
+        <Card v-if="!isSendEmail">
+          <CardHeader class="text-center">
+            <CardTitle class="text-xl"> Forgot Password </CardTitle>
+            <CardDescription> No worries, we'll send you reset instructions </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form @submit.prevent="onSubmit">
+              <div class="grid gap-6">
+                <div class="grid gap-6">
+                  <div class="grid gap-3">
+                    <FormField name="email" v-slot="{ componentField }">
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            v-bind="componentField"
+                            placeholder="john@example.com"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    </FormField>
+                  </div>
+                  <Button type="submit" class="w-full" :disabled="isSubmitting">
+                    Send instructions
+                  </Button>
+                </div>
+                <div class="text-center text-sm">
+                  Don't have an account?
+                  <RouterLink :to="{ name: 'signup' }" class="underline underline-offset-4">
+                    Sign up
+                  </RouterLink>
+                </div>
+              </div>
             </form>
             <p class="mt-8 text-center text-sm">
               <RouterLink
@@ -97,37 +102,36 @@ const onSubmit = handleSubmit(async (values) => {
                 Back to Log in
               </RouterLink>
             </p>
-          </div>
-          <div v-else class="relative z-[2] w-full max-w-[340px] px-5">
-            <div
-              class="mx-auto mb-6 flex size-14 items-center justify-center rounded-lg border bg-background"
-            >
-              <Mail class="size-6" />
+          </CardContent>
+        </Card>
+        <Card v-else>
+          <CardHeader class="text-center">
+            <CardTitle class="text-xl"> Check your inbox </CardTitle>
+            <CardDescription>
+              We've sent you an email with instructions to reset your password
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div>
+              <div class="grid gap-6">
+                <div class="grid gap-6">
+                  <Button class="w-full mt-4" type="button" @click.prevent="isSendEmail = false">
+                    <ArrowLeft class="size-5" />
+                    <span>Resend instructions</span>
+                  </Button>
+                  <p class="mt-4 text-center text-sm">
+                    <RouterLink
+                      class="font-semibold text-primary underline-offset-2 hover:underline"
+                      :to="{ name: 'login' }"
+                    >
+                      Back to Log in
+                    </RouterLink>
+                  </p>
+                </div>
+              </div>
             </div>
-
-            <div class="flex flex-col items-center text-center">
-              <h1 class="text-2xl font-bold tracking-tight lg:text-3xl">Check your inbox</h1>
-              <p class="mt-1 text-muted-foreground">
-                We've sent you an email with instructions to reset your password.
-              </p>
-            </div>
-
-            <div class="mt-10">
-              <Button class="w-full" type="button" @click.prevent="isSendEmail = false">
-                <ArrowLeft class="size-5" />
-                <span>Resend instructions</span>
-              </Button>
-            </div>
-            <p class="mt-8 text-center text-sm">
-              <RouterLink
-                class="font-semibold text-primary underline-offset-2 hover:underline"
-                :to="{ name: 'login' }"
-              >
-                Back to Log in
-              </RouterLink>
-            </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   </EmptyLayout>

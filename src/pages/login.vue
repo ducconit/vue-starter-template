@@ -49,10 +49,10 @@ const onSubmit = async () => {
 <template>
   <EmptyLayout>
     <div class="flex h-screen w-full items-center justify-center px-4">
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-6 mx-auto w-full max-w-sm">
         <Card>
           <CardHeader class="text-center">
-            <CardTitle class="text-xl"> Welcome back </CardTitle>
+            <CardTitle class="text-xl"> Login </CardTitle>
             <CardDescription> Login with your Apple or Google account </CardDescription>
           </CardHeader>
           <CardContent>
