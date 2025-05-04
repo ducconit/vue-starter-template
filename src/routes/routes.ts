@@ -19,4 +19,10 @@ export default [
     component: () => import('@/pages/signup.vue'),
     name: 'signup',
   },
+  {
+    // callback route
+    path: '/:path(.*)*',
+    component: () => import('@/pages/callback.vue'),
+    name: 'callback',
+  },
 ]
