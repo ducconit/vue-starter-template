@@ -56,10 +56,25 @@ const data = {
   ],
   navMain: [
     {
+      title: 'Dashboard',
+      url: '#',
+      icon: PieChart,
+      isActive: true,
+      items: [
+        {
+          title: 'Dashboard',
+          url: '/',
+        },
+        {
+          title: 'E-commerce',
+          url: '/ecommerce',
+        },
+      ],
+    },
+    {
       title: 'Playground',
       url: '#',
       icon: SquareTerminal,
-      isActive: true,
       items: [
         {
           title: 'History',
