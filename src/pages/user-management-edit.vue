@@ -215,7 +215,7 @@ const formatDate = (dateString: string) => {
 <template>
   <div class="container mx-auto p-6">
     <div class="flex items-center gap-2 mb-6">
-      <Button variant="ghost" size="icon" @click="goBack">
+      <Button variant="outline" size="icon" @click="goBack">
         <ArrowLeft class="h-5 w-5" />
       </Button>
       <h1 class="text-2xl font-bold">Edit User</h1>
