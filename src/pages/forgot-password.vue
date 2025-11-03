@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Spinner } from '@/components/ui/spinner'
 import { useHead } from '@unhead/vue'
 import { apiForgotPassword } from '@/api'
 import { useMutation } from '@tanstack/vue-query'
@@ -82,7 +83,8 @@ const onSubmit = handleSubmit(async (values) => {
                   </FormField>
                 </div>
                 <Button type="submit" class="w-full" :disabled="isSubmitting">
-                  Send instructions
+                  <Spinner v-if="isSubmitting" class="mr-2 h-4 w-4" />
+                  <span>Send instructions</span>
                 </Button>
               </div>
               <div class="text-center text-sm">
