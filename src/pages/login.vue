@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { toast } from 'vue-sonner'
 import { useHead } from '@unhead/vue'
 import { useMutation } from '@tanstack/vue-query'
 import { apiLogin } from '@/api'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 useHead({
   title: 'Login',
@@ -19,6 +21,24 @@ useHead({
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
+
+const LoginSchema = toTypedSchema(
+  z
+    .object({
+      email: z.string().email({ message: 'Email is invalid' }),
+      password: z.string().min(1, { message: 'Password is required' }),
+    })
+    .required(),
+)
+
+const { handleSubmit, meta: formMeta, isSubmitting } = useForm({
+  validationSchema: LoginSchema,
+  initialValues: {
+    email: '',
+    password: '',
+  },
+})
+
 const {
   isPending: isLoadingLogging,
   mutateAsync: login,
@@ -27,27 +47,24 @@ const {
   mutationFn: apiLogin,
 })
 
-const credentials = ref({
-  email: '',
-  password: '',
-})
-
-const onSubmit = async () => {
+const onSubmit = handleSubmit(async (values) => {
   try {
-    const { data }: any = await login(credentials.value)
+    const { data }: any = await login(values)
     authStore.setUserLoggedIn(data.token, data.user)
 
     if (route.query.redirect) {
-      return router.push(route.query.redirect as string)
+      router.push(route.query.redirect as string)
+      return
     }
-    return router.push({ name: 'home' })
+
+    router.push({ name: 'home' })
   } catch (e: any) {
     console.log(e)
     if (e?.response?.data?.err_code > 0) {
       toast.error(e?.response?.data?.err_msg)
     }
   }
-}
+})
 </script>
 
 <template>
@@ -59,38 +76,40 @@ const onSubmit = async () => {
           <CardDescription> Login with your GitHub or Google account </CardDescription>
         </CardHeader>
         <CardContent>
-          <form @submit.prevent="onSubmit">
+          <form @submit="onSubmit">
             <div class="grid gap-6">
               <div class="grid gap-6">
-                <div class="grid gap-3">
-                  <Label for="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    v-model="credentials.email"
-                    placeholder="email@example.com"
-                    required
-                  />
-                </div>
-                <div class="grid gap-3">
-                  <div class="flex items-center">
-                    <Label for="password">Password</Label>
-                    <RouterLink
-                      :to="{ name: 'forgot-password' }"
-                      class="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      Forgot your password?
-                    </RouterLink>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="********"
-                    v-model="credentials.password"
-                    required
-                  />
-                </div>
-                <Button type="submit" class="w-full" :disabled="isLoadingLogging || isLoginSuccess">
+                <FormField name="email" v-slot="{ componentField }">
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="email@example.com" v-bind="componentField" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+                <FormField name="password" v-slot="{ componentField }">
+                  <FormItem>
+                    <div class="flex items-center">
+                      <FormLabel>Password</FormLabel>
+                      <RouterLink
+                        :to="{ name: 'forgot-password' }"
+                        class="ml-auto text-sm underline-offset-4 hover:underline"
+                      >
+                        Forgot your password?
+                      </RouterLink>
+                    </div>
+                    <FormControl>
+                      <Input type="password" placeholder="********" v-bind="componentField" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+                <Button
+                  type="submit"
+                  class="w-full"
+                  :disabled="isLoadingLogging || isLoginSuccess || isSubmitting || !formMeta.valid"
+                >
                   Login
                 </Button>
               </div>
