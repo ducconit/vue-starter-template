@@ -79,4 +79,28 @@ export default function (srv: Server) {
       },
     )
   })
+
+  srv.post('/auth/verify-otp', (_schema, request) => {
+    const { otp } = JSON.parse(request.requestBody)
+
+    if (otp === '123456') {
+      return new Response(
+        200,
+        {},
+        {
+          err_code: 0,
+          err_msg: 'OTP verified',
+        },
+      )
+    }
+
+    return new Response(
+      400,
+      {},
+      {
+        err_code: 1,
+        err_msg: 'Invalid OTP',
+      },
+    )
+  })
 }

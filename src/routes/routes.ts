@@ -78,6 +78,14 @@ export default [
     },
   },
   {
+    path: '/verify-otp',
+    component: () => import('@/pages/verify-otp.vue'),
+    name: 'verify-otp',
+    meta: {
+      guest: true,
+    },
+  },
+  {
     // callback route
     path: '/:path(.*)*',
     component: () => import('@/pages/callback.vue'),

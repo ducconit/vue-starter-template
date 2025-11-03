@@ -54,7 +54,7 @@ const onSubmit = handleSubmit(async (values) => {
     toast.success('Success', {
       description: 'User registered successfully',
     })
-    router.push({ name: 'login' })
+    router.push({ name: 'verify-otp' })
   } catch (e: any) {
     console.log(e)
     if (e?.response?.data?.err_code > 0) {

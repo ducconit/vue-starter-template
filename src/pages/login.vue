@@ -32,7 +32,11 @@ const LoginSchema = toTypedSchema(
     .required(),
 )
 
-const { handleSubmit, meta: formMeta, isSubmitting } = useForm({
+const {
+  handleSubmit,
+  meta: formMeta,
+  isSubmitting,
+} = useForm({
   validationSchema: LoginSchema,
   initialValues: {
     email: '',
