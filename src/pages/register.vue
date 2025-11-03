@@ -13,8 +13,8 @@ import { toast } from 'vue-sonner'
 import { FormField, FormItem, FormLabel, FormMessage, FormControl } from '@/components/ui/form'
 
 useHead({
-  title: 'Signup',
-  meta: [{ name: 'description', content: 'Signup to your account' }],
+  title: 'Register',
+  meta: [{ name: 'description', content: 'Register to your account' }],
 })
 
 const router = useRouter()
@@ -60,7 +60,7 @@ const onSubmit = handleSubmit(async (values) => {
     <div class="flex flex-col gap-6">
       <Card class="mx-auto max-w-sm">
         <CardHeader>
-          <CardTitle class="text-xl"> Sign Up </CardTitle>
+          <CardTitle class="text-xl"> Register </CardTitle>
           <CardDescription> Enter your information to create an account </CardDescription>
         </CardHeader>
         <CardContent>
@@ -129,7 +129,7 @@ const onSubmit = handleSubmit(async (values) => {
                     fill="currentColor"
                   />
                 </svg>
-                Sign up with GitHub
+                Register with GitHub
               </Button>
               <Button variant="outline" class="w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4">
@@ -138,7 +138,7 @@ const onSubmit = handleSubmit(async (values) => {
                     fill="currentColor"
                   />
                 </svg>
-                Sign up with Google
+                Register with Google
               </Button>
             </div>
           </form>

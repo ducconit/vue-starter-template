@@ -123,8 +123,8 @@ const onSubmit = async () => {
               </div>
               <div class="text-center text-sm">
                 Don't have an account?
-                <RouterLink :to="{ name: 'signup' }" class="underline underline-offset-4">
-                  Sign up
+                <RouterLink :to="{ name: 'register' }" class="underline underline-offset-4">
+                  Register
                 </RouterLink>
               </div>
             </div>

@@ -70,9 +70,9 @@ export default [
     },
   },
   {
-    path: '/signup',
-    component: () => import('@/pages/signup.vue'),
-    name: 'signup',
+    path: '/register',
+    component: () => import('@/pages/register.vue'),
+    name: 'register',
     meta: {
       guest: true,
     },
