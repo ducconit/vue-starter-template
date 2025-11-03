@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { useHead } from '@unhead/vue'
 import { useRouter } from 'vue-router'
 import { useMutation } from '@tanstack/vue-query'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
+import { useIntervalFn, useStorage } from '@vueuse/core'
 import * as z from 'zod'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -20,6 +22,8 @@ useHead({
 
 const router = useRouter()
 const otpLength = 5
+const RESEND_DURATION_SECONDS = 5 * 60
+const RESEND_STORAGE_KEY = 'verify-otp:resend-expiry'
 
 const OtpSchema = toTypedSchema(
   z
@@ -44,6 +48,51 @@ const {
 
 const { mutateAsync: verifyOtp } = useMutation({
   mutationFn: apiVerifyOtp,
+})
+
+const resendExpiry = useStorage<number | null>(RESEND_STORAGE_KEY, null)
+const remainingSeconds = ref(0)
+
+const syncRemaining = () => {
+  if (!resendExpiry.value) {
+    remainingSeconds.value = 0
+    return
+  }
+
+  const diff = Math.ceil((resendExpiry.value - Date.now()) / 1000)
+  if (diff > 0) {
+    remainingSeconds.value = diff
+    return
+  }
+
+  remainingSeconds.value = 0
+  resendExpiry.value = null
+}
+
+const startCooldown = () => {
+  resendExpiry.value = Date.now() + RESEND_DURATION_SECONDS * 1000
+  syncRemaining()
+}
+
+if (!resendExpiry.value) {
+  startCooldown()
+} else {
+  syncRemaining()
+}
+
+useIntervalFn(syncRemaining, 1000)
+
+const isCooldown = computed(() => remainingSeconds.value > 0)
+
+const formattedRemaining = computed(() => {
+  if (!isCooldown.value) {
+    return ''
+  }
+
+  const minutes = Math.floor(remainingSeconds.value / 60)
+  const seconds = remainingSeconds.value % 60
+
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 })
 
 const toArray = (otp?: string) => (otp ? otp.slice(0, otpLength).split('') : [])
@@ -80,9 +129,14 @@ const onSubmit = handleSubmit(async (values) => {
 })
 
 const onResend = () => {
+  if (isCooldown.value) {
+    return
+  }
+
   toast.info('Verification code sent', {
     description: 'Please check your email for the latest code',
   })
+  startCooldown()
 }
 </script>
 
@@ -134,10 +188,12 @@ const onResend = () => {
             Didn't receive the code?
             <button
               type="button"
-              class="pl-1 font-medium text-primary underline-offset-4 hover:underline"
+              class="pl-1 font-medium text-primary underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-60"
+              :disabled="isCooldown || isSubmitting"
               @click="onResend"
             >
-              Resend
+              <template v-if="isCooldown">Resend in {{ formattedRemaining }}</template>
+              <template v-else>Resend</template>
             </button>
           </div>
         </CardContent>
