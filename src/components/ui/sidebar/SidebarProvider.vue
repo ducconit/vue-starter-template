@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils'
-import { useEventListener, useMediaQuery, useVModel } from '@vueuse/core'
+import type { HTMLAttributes, Ref } from 'vue'
+import { defaultDocument, useEventListener, useMediaQuery, useVModel } from '@vueuse/core'
 import { TooltipProvider } from 'reka-ui'
-import { computed, type HTMLAttributes, type Ref, ref } from 'vue'
+import { computed, ref } from 'vue'
+import { cn } from '@/lib/utils'
 import {
   provideSidebarContext,
   SIDEBAR_COOKIE_MAX_AGE,
@@ -19,7 +20,7 @@ const props = withDefaults(
     class?: HTMLAttributes['class']
   }>(),
   {
-    defaultOpen: true,
+    defaultOpen: !defaultDocument?.cookie.includes(`${SIDEBAR_COOKIE_NAME}=false`),
     open: undefined,
   },
 )

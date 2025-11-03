@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DialogRootEmits, DialogRootProps } from 'reka-ui'
+import { useForwardPropsEmits } from 'reka-ui'
 import {
   Dialog,
   DialogContent,
@@ -7,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { useForwardPropsEmits } from 'reka-ui'
 import Command from './Command.vue'
 
 const props = withDefaults(
@@ -29,11 +29,11 @@ const forwarded = useForwardPropsEmits(props, emits)
 
 <template>
   <Dialog v-bind="forwarded">
-    <DialogHeader class="sr-only">
-      <DialogTitle>{{ title }}</DialogTitle>
-      <DialogDescription>{{ description }}</DialogDescription>
-    </DialogHeader>
     <DialogContent class="overflow-hidden p-0">
+      <DialogHeader class="sr-only">
+        <DialogTitle>{{ title }}</DialogTitle>
+        <DialogDescription>{{ description }}</DialogDescription>
+      </DialogHeader>
       <Command>
         <slot />
       </Command>

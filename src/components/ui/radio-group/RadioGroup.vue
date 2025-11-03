@@ -1,21 +1,14 @@
 <script setup lang="ts">
+import type { RadioGroupRootEmits, RadioGroupRootProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
+import { reactiveOmit } from '@vueuse/core'
+import { RadioGroupRoot, useForwardPropsEmits } from 'reka-ui'
 import { cn } from '@/lib/utils'
-import {
-  RadioGroupRoot,
-  type RadioGroupRootEmits,
-  type RadioGroupRootProps,
-  useForwardPropsEmits,
-} from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
 
 const props = defineProps<RadioGroupRootProps & { class?: HTMLAttributes['class'] }>()
 const emits = defineEmits<RadioGroupRootEmits>()
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
-
-  return delegated
-})
+const delegatedProps = reactiveOmit(props, 'class')
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>

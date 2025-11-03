@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { ListboxRootEmits, ListboxRootProps } from 'reka-ui'
-import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from 'vue'
+import { reactiveOmit } from '@vueuse/core'
 import { ListboxRoot, useFilter, useForwardPropsEmits } from 'reka-ui'
-import { computed, type HTMLAttributes, reactive, ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import { cn } from '@/lib/utils'
 import { provideCommandContext } from '.'
 
 const props = withDefaults(defineProps<ListboxRootProps & { class?: HTMLAttributes['class'] }>(), {
@@ -11,11 +13,7 @@ const props = withDefaults(defineProps<ListboxRootProps & { class?: HTMLAttribut
 
 const emits = defineEmits<ListboxRootEmits>()
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
-
-  return delegated
-})
+const delegatedProps = reactiveOmit(props, 'class')
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
 
@@ -64,11 +62,6 @@ function filterItems() {
   }
 
   filterState.filtered.count = itemCount
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function handleSelect() {
-  filterState.search = ''
 }
 
 watch(
