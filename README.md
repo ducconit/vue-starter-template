@@ -167,12 +167,6 @@ We welcome contributions! To get started:
 
 Please ensure linting and type checks pass before submitting.
 
-## Roadmap
-
-- [ ] Add end-to-end tests with Playwright.
-- [ ] Provide additional layout presets.
-- [ ] Expand Mirage fixtures to cover more use cases.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
