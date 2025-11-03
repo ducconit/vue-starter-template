@@ -21,16 +21,26 @@ const router = useRouter()
 const RegisterSchema = toTypedSchema(
   z
     .object({
-      email: z.string().email(),
-      first_name: z.string(),
-      last_name: z.string(),
-      password: z.string(),
+      email: z.string().email({ message: 'Email is invalid' }),
+      first_name: z.string().min(1, { message: 'First name is required' }),
+      last_name: z.string().min(1, { message: 'Last name is required' }),
+      password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
     })
     .required(),
 )
 
-const { handleSubmit, isSubmitting } = useForm({
+const {
+  handleSubmit,
+  isSubmitting,
+  meta: formMeta,
+} = useForm({
   validationSchema: RegisterSchema,
+  initialValues: {
+    email: '',
+    first_name: '',
+    last_name: '',
+    password: '',
+  },
 })
 
 const { mutateAsync: register } = useMutation({
@@ -111,7 +121,7 @@ const onSubmit = handleSubmit(async (values) => {
                 </FormItem>
               </FormField>
             </div>
-            <Button type="submit" class="w-full" :disabled="isSubmitting">
+            <Button type="submit" class="w-full" :disabled="isSubmitting || !formMeta.valid">
               Create an account
             </Button>
             <div
