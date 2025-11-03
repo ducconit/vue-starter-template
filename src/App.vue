@@ -6,10 +6,11 @@ import { useAppError, setAppError } from './composables/useAppError'
 import { useRoute } from 'vue-router'
 import EmptyLayout from '@/layouts/EmptyLayout.vue'
 import AppLayout from './layouts/AppLayout.vue'
-import { useAuthStore } from './stores'
+import { useAuthStore, useAppStore } from './stores'
 import { storeToRefs } from 'pinia'
 import { apiGetCurrentUser } from './api'
 import { toast } from 'vue-sonner'
+import AppLoadingOverlay from './components/AppLoadingOverlay.vue'
 
 useHead({
   title: 'Dashboard',
@@ -52,12 +53,15 @@ onErrorCaptured((err, instance, info) => {
 })
 
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const { isLoggedIn } = storeToRefs(authStore)
+const { isAppLoading } = storeToRefs(appStore)
 
 onBeforeMount(async () => {
   // Nếu đã đăng nhập thì phải tải dữ liệu thông tin người dùng mới nhất
   // Đoạn code này được thực thi nếu refresh trang hoặc mở tab mới
   if (toValue(isLoggedIn)) {
+    appStore.setAppLoading(true)
     try {
       const { data } = await apiGetCurrentUser()
       authStore.setUser(data.data)
@@ -66,6 +70,8 @@ onBeforeMount(async () => {
       toast.error('Error', {
         description: 'Failed to load user data',
       })
+    } finally {
+      appStore.setAppLoading(false)
     }
   }
 })
@@ -75,6 +81,7 @@ onBeforeMount(async () => {
   <div>
     <AppError v-if="hasError" />
     <Component v-else :is="Layout" />
+    <AppLoadingOverlay :active="isAppLoading" />
     <Toaster rich-colors />
   </div>
 </template>
