@@ -4,7 +4,7 @@ import { ulid } from 'ulid'
 export default function (srv: Server) {
   srv.post('/auth/login', (schema, request) => {
     const { email, password } = JSON.parse(request.requestBody)
-    const user = schema.db.users.findBy((u: any) => u.email === email && u.password === password)
+    const user = schema.db.users!.findBy((u: any) => u.email === email && u.password === password)
     if (user) {
       return new Response(
         200,
@@ -27,7 +27,7 @@ export default function (srv: Server) {
 
   srv.post('/auth/forgot-password', (schema, request) => {
     const { email } = JSON.parse(request.requestBody)
-    const user = schema.db.users.findBy((u: any) => u.email === email)
+    const user = schema.db.users!.findBy((u: any) => u.email === email)
     if (user) {
       return new Response(
         200,
@@ -50,9 +50,9 @@ export default function (srv: Server) {
 
   srv.post('/auth/register', (schema, request) => {
     const { email, password, first_name, last_name } = JSON.parse(request.requestBody)
-    const user = schema.db.users.findBy((u: any) => u.email === email)
+    const user = schema.db.users!.findBy((u: any) => u.email === email)
     if (!user) {
-      const userCreated = schema.db.users.insert({
+      const userCreated = schema.db.users!.insert({
         email,
         password,
         first_name,
