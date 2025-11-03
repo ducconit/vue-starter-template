@@ -11,6 +11,7 @@ import * as z from 'zod'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import { FormField, FormItem, FormLabel, FormMessage, FormControl } from '@/components/ui/form'
+import { Spinner } from '@/components/ui/spinner'
 
 useHead({
   title: 'Register',
@@ -122,7 +123,8 @@ const onSubmit = handleSubmit(async (values) => {
               </FormField>
             </div>
             <Button type="submit" class="w-full" :disabled="isSubmitting || !formMeta.valid">
-              Create an account
+              <Spinner v-if="isSubmitting" class="mr-2 h-4 w-4" />
+              <span>Create an account</span>
             </Button>
             <div
               class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"

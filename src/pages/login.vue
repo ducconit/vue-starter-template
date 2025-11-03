@@ -12,6 +12,7 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Spinner } from '@/components/ui/spinner'
 
 useHead({
   title: 'Login',
@@ -110,7 +111,8 @@ const onSubmit = handleSubmit(async (values) => {
                   class="w-full"
                   :disabled="isLoadingLogging || isLoginSuccess || isSubmitting || !formMeta.valid"
                 >
-                  Login
+                  <Spinner v-if="isSubmitting" class="mr-2 h-4 w-4" />
+                  <span>Login</span>
                 </Button>
               </div>
               <div
