@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useHead } from '@unhead/vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useMutation } from '@tanstack/vue-query'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
@@ -13,21 +13,23 @@ import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/f
 import { PinInput, PinInputGroup, PinInputSlot } from '@/components/ui/pin-input'
 import { Spinner } from '@/components/ui/spinner'
 import { toast } from 'vue-sonner'
-import { apiVerifyOtp } from '@/api'
-import { useOtpStore } from '@/stores'
-import { storeToRefs } from 'pinia'
+import { apiForgotPassword, apiVerifyForgotOtp } from '@/api'
 
 useHead({
-  title: 'Verify OTP',
-  meta: [{ name: 'description', content: 'Verify your account using OTP' }],
+  title: 'Verify reset code',
+  meta: [{ name: 'description', content: 'Verify OTP for password reset' }],
 })
 
 const router = useRouter()
-const otpStore = useOtpStore()
-const { registrationEmail: email } = storeToRefs(otpStore)
+const route = useRoute()
+
+const email = computed(() => String(route.query.email ?? ''))
+
 const otpLength = 5
 const RESEND_DURATION_SECONDS = 5 * 60
-const RESEND_STORAGE_KEY = 'verify-otp:resend-expiry'
+const RESEND_STORAGE_KEY = computed(() =>
+  email.value ? `forgot-otp:${email.value}:expiry` : 'forgot-otp:expiry',
+)
 
 const OtpSchema = toTypedSchema(
   z
@@ -43,6 +45,7 @@ const {
   handleSubmit,
   isSubmitting,
   meta: formMeta,
+  setErrors,
 } = useForm({
   validationSchema: OtpSchema,
   initialValues: {
@@ -51,17 +54,11 @@ const {
 })
 
 const { mutateAsync: verifyOtp } = useMutation({
-  mutationFn: apiVerifyOtp,
+  mutationFn: apiVerifyForgotOtp,
 })
 
-onMounted(() => {
-  if (!email.value) {
-    toast.error('Invalid request', {
-      description: 'Email is required to verify your account.',
-    })
-    otpStore.clearRegistrationEmail()
-    router.replace({ name: 'login' })
-  }
+const { mutateAsync: resendOtp, isPending: isResending } = useMutation({
+  mutationFn: apiForgotPassword,
 })
 
 const resendExpiry = useStorage<number | null>(RESEND_STORAGE_KEY, null)
@@ -88,7 +85,10 @@ const startCooldown = () => {
   syncRemaining()
 }
 
-if (!resendExpiry.value) {
+if (!email.value) {
+  toast.error('Missing email', { description: 'Please request a reset link again.' })
+  router.replace({ name: 'forgot-password' })
+} else if (!resendExpiry.value) {
   startCooldown()
 } else {
   syncRemaining()
@@ -124,38 +124,52 @@ const fromArray = (value: unknown) => {
 
 const onSubmit = handleSubmit(async (values) => {
   if (!email.value) {
+    toast.error('Missing email', { description: 'Please request a reset link again.' })
+    router.replace({ name: 'forgot-password' })
     return
   }
 
   try {
     await verifyOtp({ email: email.value, otp: values.otp })
-    toast.success('Success', {
-      description: 'Your account has been verified',
+    toast.success('Code verified', {
+      description: 'Please set a new password.',
     })
-    otpStore.clearRegistrationEmail()
-    router.push({ name: 'login' })
+    router.push({
+      name: 'reset-password',
+      query: {
+        email: email.value,
+        otp: values.otp,
+      },
+    })
   } catch (error: any) {
     if (error?.response?.data?.err_code > 0) {
-      toast.error('Error', {
-        description: error.response.data.err_msg,
-      })
+      const message = error.response.data.err_msg
+      setErrors({ otp: message })
+      toast.error('Error', { description: message })
       return
     }
-    toast.error('Error', {
-      description: 'Something went wrong',
-    })
+    toast.error('Error', { description: 'Something went wrong' })
   }
 })
 
-const onResend = () => {
-  if (isCooldown.value) {
+const onResend = async () => {
+  if (isCooldown.value || !email.value) {
     return
   }
 
-  toast.info('Verification code sent', {
-    description: 'Please check your email for the latest code',
-  })
-  startCooldown()
+  try {
+    await resendOtp({ email: email.value })
+    toast.info('Verification code sent', {
+      description: 'Please check your email for the latest code',
+    })
+    startCooldown()
+  } catch (error: any) {
+    if (error?.response?.data?.err_code > 0) {
+      toast.error('Error', { description: error.response.data.err_msg })
+      return
+    }
+    toast.error('Error', { description: 'Something went wrong' })
+  }
 }
 </script>
 
@@ -164,8 +178,10 @@ const onResend = () => {
     <div class="flex flex-col gap-6 w-full max-w-sm">
       <Card class="mx-auto w-full">
         <CardHeader class="space-y-2 text-center">
-          <CardTitle class="text-xl">Enter verification code</CardTitle>
-          <CardDescription>We sent a 5-digit code to your email.</CardDescription>
+          <CardTitle class="text-xl">Verify reset code</CardTitle>
+          <CardDescription>
+            We sent a {{ otpLength }}-digit code to <span class="font-medium">{{ email }}</span>.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form @submit.prevent="onSubmit" class="grid gap-6">
@@ -193,14 +209,14 @@ const onResend = () => {
                   </div>
                 </FormControl>
                 <p class="text-center text-sm text-muted-foreground">
-                  Enter the {{ otpLength }}-digit code sent to your email.
+                  Enter the code before it expires.
                 </p>
                 <FormMessage class="text-center" />
               </FormItem>
             </FormField>
             <Button type="submit" class="w-full" :disabled="isSubmitting || !formMeta.valid">
               <Spinner v-if="isSubmitting" class="mr-2 h-4 w-4" />
-              <span>Verify Account</span>
+              <span>Continue</span>
             </Button>
           </form>
           <div class="mt-4 text-center text-sm text-muted-foreground">
@@ -208,7 +224,7 @@ const onResend = () => {
             <button
               type="button"
               class="pl-1 font-medium text-primary underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-60"
-              :disabled="isCooldown || isSubmitting"
+              :disabled="isCooldown || isSubmitting || isResending"
               @click="onResend"
             >
               <template v-if="isCooldown">Resend in {{ formattedRemaining }}</template>

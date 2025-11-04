@@ -28,6 +28,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
     "embla-carousel-vue": "^8.6.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-vue-next": "^0.552.0",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.7.1",

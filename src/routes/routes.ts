@@ -70,6 +70,22 @@ export default [
     },
   },
   {
+    path: '/forgot-password/verify',
+    component: () => import('@/pages/forgot-password-verify.vue'),
+    name: 'forgot-password-verify',
+    meta: {
+      guest: true,
+    },
+  },
+  {
+    path: '/forgot-password/reset',
+    component: () => import('@/pages/reset-password.vue'),
+    name: 'reset-password',
+    meta: {
+      guest: true,
+    },
+  },
+  {
     path: '/register',
     component: () => import('@/pages/register.vue'),
     name: 'register',

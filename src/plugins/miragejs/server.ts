@@ -7,6 +7,7 @@ export const startMockServer = () =>
     environment: 'development',
     models: {
       user: Model,
+      otp: Model,
     },
 
     seeds(server) {

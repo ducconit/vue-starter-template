@@ -12,6 +12,7 @@ import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import { FormField, FormItem, FormLabel, FormMessage, FormControl } from '@/components/ui/form'
 import { Spinner } from '@/components/ui/spinner'
+import { useOtpStore } from '@/stores'
 
 useHead({
   title: 'Register',
@@ -19,6 +20,7 @@ useHead({
 })
 
 const router = useRouter()
+const otpStore = useOtpStore()
 const RegisterSchema = toTypedSchema(
   z
     .object({
@@ -54,6 +56,7 @@ const onSubmit = handleSubmit(async (values) => {
     toast.success('Success', {
       description: 'User registered successfully',
     })
+    otpStore.setRegistrationEmail(values.email)
     router.push({ name: 'verify-otp' })
   } catch (e: any) {
     console.log(e)
