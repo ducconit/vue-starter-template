@@ -14,7 +14,7 @@ export const startMockServer = () =>
       server.create('user', {
         id: ulid(),
         name: 'DNT',
-        email: 'admin@gmail.com',
+        email: 'admin@example.com',
         password: '123',
         token: 'faketoken',
       })

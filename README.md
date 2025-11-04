@@ -70,6 +70,14 @@ Global error captures push failures into a shared composable, while `vue-sonner`
 
 When `VITE_MOCK_SERVER` is enabled, Mirage JS bootstraps fixture-backed endpoints so the front end can run without a live backend (@filepath:src/plugins/miragejs/server.ts#1-200).
 
+#### Default Credentials with mock server
+
+- **Email:** `admin@example.com`
+- **Password:** `123`
+- **OTP:** `12345` (used for both account verification and forgot-password flows)
+
+Use these values to explore the authentication flow locally when the mock server is active.
+
 ### Internationalization & Meta Tags
 
 `@unhead/vue` and the i18n plugin configure dynamic titles and localized content at startup (@filepath:src/main.ts#1-27, @filepath:src/plugins/i18n/index.ts#1-200).
