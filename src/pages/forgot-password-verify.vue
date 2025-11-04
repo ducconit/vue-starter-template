@@ -180,7 +180,8 @@ const onResend = async () => {
         <CardHeader class="space-y-2 text-center">
           <CardTitle class="text-xl">Verify reset code</CardTitle>
           <CardDescription>
-            We sent a {{ otpLength }}-digit code to <span class="font-medium">{{ email }}</span>.
+            We sent a {{ otpLength }}-digit code to <span class="font-medium">{{ email }}</span
+            >.
           </CardDescription>
         </CardHeader>
         <CardContent>

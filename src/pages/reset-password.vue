@@ -99,7 +99,8 @@ const onSubmit = handleSubmit(async (values) => {
         <CardHeader class="space-y-2 text-center">
           <CardTitle class="text-xl">Create new password</CardTitle>
           <CardDescription>
-            Choose a strong password for <span class="font-medium">{{ email }}</span>.
+            Choose a strong password for <span class="font-medium">{{ email }}</span
+            >.
           </CardDescription>
         </CardHeader>
         <CardContent>

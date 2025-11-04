@@ -10,7 +10,13 @@ export type OtpType = (typeof OTP_TYPES)[keyof typeof OTP_TYPES]
 
 export const getOtpCollection = (db: any) => db?.otps
 
-export const upsertOtp = (db: any, identify: string, type: OtpType, code = OTP_CODE, ttl = OTP_TTL) => {
+export const upsertOtp = (
+  db: any,
+  identify: string,
+  type: OtpType,
+  code = OTP_CODE,
+  ttl = OTP_TTL,
+) => {
   const collection = getOtpCollection(db)
   if (!collection) {
     return null
