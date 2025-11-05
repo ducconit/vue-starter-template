@@ -28,6 +28,11 @@ const RegisterSchema = toTypedSchema(
       first_name: z.string().min(1, { message: 'First name is required' }),
       last_name: z.string().min(1, { message: 'Last name is required' }),
       password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
+      confirm_password: z.string().min(1, { message: 'Confirm password is required' }),
+    })
+    .refine((data) => data.password === data.confirm_password, {
+      message: 'Passwords do not match',
+      path: ['confirm_password'],
     })
     .required(),
 )
@@ -43,6 +48,7 @@ const {
     first_name: '',
     last_name: '',
     password: '',
+    confirm_password: '',
   },
 })
 
@@ -51,8 +57,9 @@ const { mutateAsync: register } = useMutation({
 })
 
 const onSubmit = handleSubmit(async (values) => {
+  const { confirm_password: _confirmPassword, ...payload } = values
   try {
-    await register(values)
+    await register(payload)
     toast.success('Success', {
       description: 'User registered successfully',
     })
@@ -118,6 +125,17 @@ const onSubmit = handleSubmit(async (values) => {
               <FormField name="password" v-slot="{ componentField }">
                 <FormItem>
                   <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input v-bind="componentField" type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+            <div class="grid gap-2">
+              <FormField name="confirm_password" v-slot="{ componentField }">
+                <FormItem>
+                  <FormLabel>Confirm password</FormLabel>
                   <FormControl>
                     <Input v-bind="componentField" type="password" />
                   </FormControl>
