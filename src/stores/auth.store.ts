@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
 import { toValue, type Ref } from 'vue'
+import type { User } from '@/types/user'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as object | null,
+    user: null as User | null,
     token: null as string | null,
     isLoggedIn: false,
   }),
@@ -11,7 +12,7 @@ export const useAuthStore = defineStore('auth', {
     accessToken: (state) => state.token,
   },
   actions: {
-    setUserLoggedIn(token: string | Ref<string>, user: object | Ref<object>) {
+    setUserLoggedIn(token: string | Ref<string>, user: User | Ref<User>) {
       this.$patch({
         user: toValue(user),
         token: toValue(token),
@@ -19,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
       })
     },
 
-    setUser(user: object | Ref<object>) {
+    setUser(user: User | Ref<User>) {
       this.$patch({
         user: toValue(user),
       })

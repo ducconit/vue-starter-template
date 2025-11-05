@@ -5,4 +5,5 @@ export interface User {
   password: string
   token: string
   verified_at: string | null
+  avatar_url: string | null
 }
