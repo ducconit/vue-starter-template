@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { useHead } from '@unhead/vue'
 import { computed, onBeforeMount, onErrorCaptured, toValue } from 'vue'
 import { useAppError, setAppError } from './composables/useAppError'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import EmptyLayout from '@/layouts/EmptyLayout.vue'
 import AppLayout from './layouts/AppLayout.vue'
 import { useAuthStore, useAppStore } from './stores'
@@ -23,6 +23,7 @@ useHead({
 
 const route = useRoute()
 const { hasError } = useAppError()
+const router = useRouter()
 
 const Layout = computed(() => {
   if (!route.meta.layout) {
@@ -67,9 +68,11 @@ onBeforeMount(async () => {
       authStore.setUser(data.data)
     } catch (e) {
       console.log(e)
+      authStore.logout()
       toast.error('Error', {
-        description: 'Failed to load user data',
+        description: 'Session expired, please sign in again.',
       })
+      router.push('/login')
     } finally {
       appStore.setAppLoading(false)
     }

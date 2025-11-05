@@ -1,40 +1,26 @@
 import { Response, type Server } from 'miragejs'
+import type { AppSchema } from '../types'
 import { ulid } from 'ulid'
-import { OTP_TYPES, clearOtp, mapOtpError, upsertOtp, validateOtp } from '../utils/otp'
 
-const base64UrlEncode = (value: string) =>
-  btoa(value).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
-
-const createFakeJwt = (subject: string) => {
-  const now = Math.floor(Date.now() / 1000)
-  const header = base64UrlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-  const payload = base64UrlEncode(
-    JSON.stringify({
-      sub: subject,
-      jti: ulid(),
-      iat: now,
-      exp: now + 60 * 60,
-    }),
-  )
-  const signatureSeed = `${subject}.${now}.${Math.random().toString(36).slice(2)}`
-  const signature = base64UrlEncode(signatureSeed)
-  return `${header}.${payload}.${signature}`
+const OTP_CODE = '12345'
+const OTP_TTL = 5 * 60 * 1000
+export const OTP_TYPES = {
+  VERIFY_ACCOUNT: 'verify-account',
+  FORGOT_PASSWORD: 'forgot-password',
 }
 
 export default function (srv: Server) {
-  srv.post('/auth/login', (schema, request) => {
+  srv.post('/auth/login', (schema: AppSchema, request) => {
     const { email, password } = JSON.parse(request.requestBody)
-    const user = schema.db.users!.findBy((u: any) => u.email === email && u.password === password)
+    const user = schema.findBy('user', { email, password })
+
     if (user) {
-      const token = createFakeJwt(email)
-      schema.db.users!.update(user.id, { token })
-      const hydratedUser = schema.db.users!.find(user.id)
       return new Response(
         200,
         {},
         {
-          user: hydratedUser,
-          token,
+          user,
+          token: user.token,
         },
       )
     }
@@ -49,10 +35,27 @@ export default function (srv: Server) {
   })
 
   srv.post('/auth/forgot-password', (schema, request) => {
-    const { email } = JSON.parse(request.requestBody) as { email: string }
-    const user = schema.db.users!.findBy((u: any) => u.email === email)
+    const { email } = JSON.parse(request.requestBody)
+    const user = schema.findBy('user', { email } as any)
     if (user) {
-      upsertOtp(schema.db, email, OTP_TYPES.FORGOT_PASSWORD)
+      const otp = schema.findBy('otp', { identify: email, type: OTP_TYPES.FORGOT_PASSWORD } as any)
+      if (otp) {
+        otp.update({ expires_at: Date.now() + OTP_TTL })
+        return new Response(
+          200,
+          {},
+          {
+            err_code: 0,
+            err_msg: 'Success',
+          },
+        )
+      }
+      schema.create('otp', {
+        identify: email,
+        type: OTP_TYPES.FORGOT_PASSWORD,
+        code: OTP_CODE,
+        expires_at: Date.now() + OTP_TTL,
+      } as any)
       return new Response(
         200,
         {},
@@ -73,10 +76,15 @@ export default function (srv: Server) {
   })
 
   srv.post('/auth/forgot-password/verify', (schema, request) => {
-    const { email, otp } = JSON.parse(request.requestBody) as { email: string; otp: string }
-    const result = validateOtp(schema.db, email, OTP_TYPES.FORGOT_PASSWORD, otp)
+    const { email, otp } = JSON.parse(request.requestBody)
+    const result = schema.findBy('otp', {
+      identify: email,
+      type: OTP_TYPES.FORGOT_PASSWORD,
+      code: otp,
+    } as any)
 
-    if (result.valid) {
+    if (result) {
+      result.destroy()
       return new Response(
         200,
         {},
@@ -86,17 +94,19 @@ export default function (srv: Server) {
         },
       )
     }
-    const error = mapOtpError(result.reason)
-    return new Response(400, {}, error)
+    return new Response(
+      400,
+      {},
+      {
+        err_code: 1,
+        err_msg: 'Invalid OTP',
+      },
+    )
   })
 
   srv.post('/auth/forgot-password/reset', (schema, request) => {
-    const { email, otp, password } = JSON.parse(request.requestBody) as {
-      email: string
-      otp: string
-      password: string
-    }
-    const user = schema.db.users!.findBy((u: any) => u.email === email)
+    const { email, otp, password } = JSON.parse(request.requestBody)
+    const user = schema.findBy('user', { email } as any)
 
     if (!user) {
       return new Response(
@@ -109,15 +119,25 @@ export default function (srv: Server) {
       )
     }
 
-    const result = validateOtp(schema.db, email, OTP_TYPES.FORGOT_PASSWORD, otp)
+    const result = schema.findBy('otp', {
+      identify: email,
+      type: OTP_TYPES.FORGOT_PASSWORD,
+      code: otp,
+    } as any)
 
-    if (!result.valid) {
-      const error = mapOtpError(result.reason)
-      return new Response(400, {}, error)
+    if (!result) {
+      return new Response(
+        400,
+        {},
+        {
+          err_code: 1,
+          err_msg: 'Invalid OTP',
+        },
+      )
     }
 
-    schema.db.users!.update(user.id, { password })
-    clearOtp(schema.db, result.record)
+    user.update({ password })
+    result.destroy()
 
     return new Response(
       200,
@@ -130,13 +150,8 @@ export default function (srv: Server) {
   })
 
   srv.post('/auth/register', (schema, request) => {
-    const { email, password, first_name, last_name } = JSON.parse(request.requestBody) as {
-      email: string
-      password: string
-      first_name: string
-      last_name: string
-    }
-    const existingUser = schema.db.users!.findBy((u: any) => u.email === email)
+    const { email, password, first_name, last_name } = JSON.parse(request.requestBody)
+    const existingUser = schema.findBy('user', { email } as any)
 
     if (existingUser) {
       return new Response(
@@ -149,17 +164,25 @@ export default function (srv: Server) {
       )
     }
 
-    const token = createFakeJwt(email)
-    const userCreated = schema.db.users!.insert({
+    const userData = {
       email,
       password,
       first_name,
       last_name,
-      token,
       verified_at: null,
-    })
+    }
+    const token = ulid()
+    const userCreated = schema.create('user', {
+      ...userData,
+      token,
+    } as any)
 
-    upsertOtp(schema.db, email, OTP_TYPES.VERIFY_ACCOUNT)
+    schema.create('otp', {
+      identify: email,
+      type: OTP_TYPES.VERIFY_ACCOUNT,
+      code: OTP_CODE,
+      expires_at: Date.now() + OTP_TTL,
+    } as any)
 
     return new Response(
       200,
@@ -175,7 +198,7 @@ export default function (srv: Server) {
 
   srv.post('/auth/verify-otp', (schema, request) => {
     const { email, otp } = JSON.parse(request.requestBody) as { email: string; otp: string }
-    const user = schema.db.users!.findBy((u: any) => u.email === email)
+    const user = schema.findBy('user', { email } as any)
 
     if (!user) {
       return new Response(
@@ -188,15 +211,25 @@ export default function (srv: Server) {
       )
     }
 
-    const result = validateOtp(schema.db, email, OTP_TYPES.VERIFY_ACCOUNT, otp)
+    const result = schema.findBy('otp', {
+      identify: email,
+      type: OTP_TYPES.VERIFY_ACCOUNT,
+      code: otp,
+    } as any)
 
-    if (!result.valid) {
-      const error = mapOtpError(result.reason)
-      return new Response(400, {}, error)
+    if (!result) {
+      return new Response(
+        400,
+        {},
+        {
+          err_code: 1,
+          err_msg: 'Invalid OTP',
+        },
+      )
     }
 
-    clearOtp(schema.db, result.record)
-    schema.db.users!.update(user.id, { verified_at: Date.now() })
+    result.destroy()
+    user.update({ verified_at: Date.now().toString() })
 
     return new Response(
       200,

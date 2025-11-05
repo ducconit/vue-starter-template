@@ -6,9 +6,13 @@ import Components from 'unplugin-vue-components/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), tailwindcss(), Components({
-    dirs: [path.resolve(__dirname, './src/components'), path.resolve(__dirname, './src/layouts')],
-  })],
+  plugins: [
+    vue(),
+    tailwindcss(),
+    Components({
+      dirs: [path.resolve(__dirname, './src/components'), path.resolve(__dirname, './src/layouts')],
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
